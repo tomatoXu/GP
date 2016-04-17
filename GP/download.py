@@ -88,7 +88,6 @@ class download():
 			im = Image.open("/home/allen/GP/src/r"+str(i+1)+str(j+1)+".jpg")
 			out = im.resize((300,150))
 			out.save("/home/allen/GP/src/r"+str(i+1)+str(j+1)+".png")
-        
 if __name__ == "__main__":
     dl = download()
     a = dl.urlencode('a')

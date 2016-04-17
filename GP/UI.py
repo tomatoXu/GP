@@ -35,7 +35,7 @@ class UI(wx.Frame):
         vbox = wx.BoxSizer(wx.VERTICAL)
         toolbox = wx.BoxSizer(wx.HORIZONTAL)
 
-        mainbox = wx.BoxSizer(wx.HORIZONTAL)
+	mainbox = wx.BoxSizer(wx.HORIZONTAL)
         toolbar = wx.ToolBar(self, -1, style=wx.TB_HORIZONTAL | wx.NO_BORDER)
         toolbar.AddSimpleTool(1, wx.Image('home.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap(), 'home', 'Home')
         toolbar.AddSimpleTool(2, wx.Image('mine.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap(), 'mine', 'Mine')
@@ -77,8 +77,14 @@ class UI(wx.Frame):
         pic_2 = wx.ToolBar(self, -1, style = wx.TB_HORIZONTAL | wx.NO_BORDER)
         pic_3 = wx.ToolBar(self, -1, style = wx.TB_HORIZONTAL | wx.NO_BORDER)
         
-        pic_1.AddSimpleTool(211, wx.Image('/home/allen/GP/src/r11.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap(), '', '')
-        pic_1.AddSimpleTool(212, wx.Image('/home/allen/GP/src/r12.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap(), '', '')
+	self.pic_panel_1 = wx.Panel(self, -1)
+	im = wx.Image('/home/allen/GP/src/r11.png',wx.BITMAP_TYPE_ANY)
+	temp = im.ConvertToBitmap()
+	wx.StaticBitmap(parent = self.pic_panel_1, bitmap = temp, pos=(0,0), size = (300,150))
+	picbox_1.Add(self.pic_panel_1, 0, wx.EXPAND)
+ 
+        pic_1.AddSimpleTool(211, wx.Image('fangda.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap(), '', '')
+        pic_1.AddSimpleTool(212, wx.Image('suoxiao.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap(), '', '')
         pic_2.AddSimpleTool(213, wx.Image('/home/allen/GP/src/r13.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap(), '', '')
         pic_2.AddSimpleTool(214, wx.Image('/home/allen/GP/src/r14.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap(), '', '')
         pic_3.AddSimpleTool(215, wx.Image('/home/allen/GP/src/r15.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap(), '', '')
@@ -150,12 +156,19 @@ class UI(wx.Frame):
         self.statusbar.SetStatusText('Mine Command')
     def OnSearch(self, event):
         self.statusbar.SetStatusText('Search Command')
+	im = wx.Image('/home/allen/GP/src/r22.png',wx.BITMAP_TYPE_ANY)
+        temp = im.ConvertToBitmap()
+        wx.StaticBitmap(parent = self.pic_panel_1, bitmap = temp, pos=(0,0), size = (300,150))
+        self.pic_panel_1.Refresh()
  	dl = download()
         a = dl.urlencode('a')
         b = dl.get_linklist(a)
         dl.downImageViaMutiThread(b)
         dl.getpng()
-	self.Refresh()
+	im = wx.Image('/home/allen/GP/src/r11.png',wx.BITMAP_TYPE_ANY)
+        temp = im.ConvertToBitmap()
+        wx.StaticBitmap(parent = self.pic_panel_1, bitmap = temp, pos=(0,0), size = (300,150))
+	self.pic_panel_1.Refresh()
         print 'aaaaaaa'
     def OnOpen(self, event):
         self.statusbar.SetStatusText('Open Command')
