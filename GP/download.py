@@ -8,7 +8,7 @@ import re
 
 class download():
     def urlencode(self, words):
-        st = u'风景'
+        st = u'变形金刚'
         st = st.encode('gb2312')
         m = {'par':st,}
         s = urllib.urlencode(m)
@@ -40,21 +40,29 @@ class download():
                    "Accept-Encoding":"gzip,deflate",
                    "Connection": "keep-alive",
         }
-	#print "imgUrl:",imgUrl
         response = requests.get(imgUrl, headers = headers, stream = True)
         image = response.content
         DstDir="/home/allen/GP/src/"
-        #print("save file"+DstDir+imgName+"\n")
         try:
             with open(DstDir+imgName ,"wb") as jpg:
-                jpg.write( image)     
+                jpg.write( image)    
                 return
         except IOError:
             print("IO Error\n")
             return
         finally:
             jpg.close
-    
+	    im = Image.open("/home/allen/GP/src/"+imgName)
+            out = im.resize((300,150))
+            str_list = list(imgName)
+            str_list.pop()
+            str_list.pop()
+            str_list.pop()
+            str_list.pop()
+            new = "".join(str_list)
+	    print new
+            out.save("/home/allen/GP/src/"+new+".png")
+ 
     def downImageViaMutiThread(self, linklist ):
 	headers = {
                    "Host":"www.netbian.com",
@@ -93,5 +101,5 @@ if __name__ == "__main__":
     a = dl.urlencode('a')
     b = dl.get_linklist(a)
     dl.downImageViaMutiThread(b)
-    dl.getpng()
+#    dl.getpng()
 #    print b

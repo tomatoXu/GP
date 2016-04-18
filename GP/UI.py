@@ -73,56 +73,95 @@ class UI(wx.Frame):
         picbox_2 = wx.BoxSizer(wx.HORIZONTAL)
         picbox_3 = wx.BoxSizer(wx.HORIZONTAL)
         
+	picbox_11 = wx.BoxSizer(wx.VERTICAL)
+	picbox_12 = wx.BoxSizer(wx.VERTICAL)
+	picbox_21 = wx.BoxSizer(wx.VERTICAL)
+	picbox_22 = wx.BoxSizer(wx.VERTICAL)
+	picbox_31 = wx.BoxSizer(wx.VERTICAL)
+	picbox_32 = wx.BoxSizer(wx.VERTICAL)
+
+
         pic_1 = wx.ToolBar(self, -1, style = wx.TB_HORIZONTAL | wx.NO_BORDER)
         pic_2 = wx.ToolBar(self, -1, style = wx.TB_HORIZONTAL | wx.NO_BORDER)
         pic_3 = wx.ToolBar(self, -1, style = wx.TB_HORIZONTAL | wx.NO_BORDER)
-        
+        pic_4 = wx.ToolBar(self, -1, style = wx.TB_HORIZONTAL | wx.NO_BORDER)
+	pic_5 = wx.ToolBar(self, -1, style = wx.TB_HORIZONTAL | wx.NO_BORDER)
+	pic_6 = wx.ToolBar(self, -1, style = wx.TB_HORIZONTAL | wx.NO_BORDER)
+
+	
 	self.pic_panel_1 = wx.Panel(self, -1)
 	im = wx.Image('/home/allen/GP/src/r11.png',wx.BITMAP_TYPE_ANY)
 	temp = im.ConvertToBitmap()
-	wx.StaticBitmap(parent = self.pic_panel_1, bitmap = temp, pos=(0,0), size = (300,150))
-	picbox_1.Add(self.pic_panel_1, 0, wx.EXPAND)
+	wx.StaticBitmap(parent = self.pic_panel_1, bitmap = temp, pos=(0,0), size = (330,140))
+	picbox_11.Add(self.pic_panel_1, 0, wx.EXPAND)
+
+	self.pic_panel_2 = wx.Panel(self, -1)
+        im = wx.Image('/home/allen/GP/src/r12.png',wx.BITMAP_TYPE_ANY)
+        temp = im.ConvertToBitmap()
+        wx.StaticBitmap(parent = self.pic_panel_2, bitmap = temp, pos=(0,0), size = (300,140))
+        picbox_12.Add(self.pic_panel_2, 0, wx.EXPAND)
  
-        pic_1.AddSimpleTool(211, wx.Image('fangda.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap(), '', '')
-        pic_1.AddSimpleTool(212, wx.Image('suoxiao.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap(), '', '')
-        pic_2.AddSimpleTool(213, wx.Image('/home/allen/GP/src/r13.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap(), '', '')
-        pic_2.AddSimpleTool(214, wx.Image('/home/allen/GP/src/r14.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap(), '', '')
-        pic_3.AddSimpleTool(215, wx.Image('/home/allen/GP/src/r15.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap(), '', '')
-        pic_3.AddSimpleTool(216, wx.Image('/home/allen/GP/src/r16.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap(), '', '')
-        
+	self.pic_panel_3 = wx.Panel(self, -1)
+        im = wx.Image('/home/allen/GP/src/r13.png',wx.BITMAP_TYPE_ANY)
+        temp = im.ConvertToBitmap()
+        wx.StaticBitmap(parent = self.pic_panel_3, bitmap = temp, pos=(0,0), size = (330,140))
+        picbox_21.Add(self.pic_panel_3, 0, wx.EXPAND)
+
+	self.pic_panel_4 = wx.Panel(self, -1)
+        im = wx.Image('/home/allen/GP/src/r14.png',wx.BITMAP_TYPE_ANY)
+        temp = im.ConvertToBitmap()
+        wx.StaticBitmap(parent = self.pic_panel_4, bitmap = temp, pos=(0,0), size = (300,140))
+        picbox_22.Add(self.pic_panel_4, 0, wx.EXPAND)
+
+	self.pic_panel_5 = wx.Panel(self, -1)
+        im = wx.Image('/home/allen/GP/src/r15.png',wx.BITMAP_TYPE_ANY)
+        temp = im.ConvertToBitmap()
+        wx.StaticBitmap(parent = self.pic_panel_5, bitmap = temp, pos=(0,0), size = (330,140))
+        picbox_31.Add(self.pic_panel_5, 0, wx.EXPAND)
+
+	self.pic_panel_6 = wx.Panel(self, -1)
+        im = wx.Image('/home/allen/GP/src/r16.png',wx.BITMAP_TYPE_ANY)
+        temp = im.ConvertToBitmap()
+        wx.StaticBitmap(parent = self.pic_panel_6, bitmap = temp, pos=(0,0), size = (300,140))
+        picbox_32.Add(self.pic_panel_6, 0, wx.EXPAND)
+
+        pic_1.AddSimpleTool(211, wx.Image('view.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap(), '', '')
+        pic_1.AddSimpleTool(221, wx.Image('view.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap(), '', '')
+        pic_2.AddSimpleTool(212, wx.Image('view.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap(), '', '')
+        pic_2.AddSimpleTool(222, wx.Image('view.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap(), '', '')
+	pic_3.AddSimpleTool(213, wx.Image('view.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap(), '', '')
+        pic_3.AddSimpleTool(223, wx.Image('view.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap(), '', '')
+	pic_4.AddSimpleTool(214, wx.Image('view.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap(), '', '')
+        pic_4.AddSimpleTool(224, wx.Image('view.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap(), '', '')
+	pic_5.AddSimpleTool(215, wx.Image('view.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap(), '', '')
+        pic_5.AddSimpleTool(225, wx.Image('view.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap(), '', '')
+	pic_6.AddSimpleTool(216, wx.Image('view.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap(), '', '')
+        pic_6.AddSimpleTool(226, wx.Image('view.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap(), '', '')
+
         pic_1.Realize()
         pic_2.Realize()
         pic_3.Realize()
-        
-        picbox_1.Add(pic_1, 0, wx.EXPAND)
-        picbox_2.Add(pic_2, 0, wx.EXPAND)
-        picbox_3.Add(pic_3, 0, wx.EXPAND)
+	pic_4.Realize()
+	pic_5.Realize()
+	pic_6.Realize()        
+
+        picbox_11.Add(pic_1, 0, wx.EXPAND)
+        picbox_12.Add(pic_2, 0, wx.EXPAND)
+	picbox_21.Add(pic_3, 0, wx.EXPAND)
+        picbox_22.Add(pic_4, 0, wx.EXPAND)
+	picbox_31.Add(pic_5, 0, wx.EXPAND)
+        picbox_32.Add(pic_6, 0, wx.EXPAND)
+
+	picbox_1.Add(picbox_11, 0 , wx.EXPAND)
+	picbox_1.Add(picbox_12, 0 , wx.EXPAND)
+	picbox_2.Add(picbox_21, 0 , wx.EXPAND)
+	picbox_2.Add(picbox_22, 0 , wx.EXPAND)
+	picbox_3.Add(picbox_31, 0 , wx.EXPAND)
+	picbox_3.Add(picbox_32, 0 , wx.EXPAND)
+
         picbox.Add(picbox_1, 1, wx.EXPAND)
         picbox.Add(picbox_2, 1, wx.EXPAND)
         picbox.Add(picbox_3, 1, wx.EXPAND)
-        '''
-        pp11 = wx.Panel(self, -1, style = wx.SIMPLE_BORDER)
-        pp12 = wx.Panel(self, -1, style = wx.SIMPLE_BORDER)        
-        pp13 = wx.Panel(self, -1, style = wx.SIMPLE_BORDER)
-        pp21 = wx.Panel(self, -1, style = wx.SIMPLE_BORDER)
-        pp22 = wx.Panel(self, -1, style = wx.SIMPLE_BORDER)
-        pp23 = wx.Panel(self, -1, style = wx.SIMPLE_BORDER)
-        picbox_left.Add(pp11, 1, wx.EXPAND | wx.ALL, 3)
-        picbox_left.Add(pp12, 1, wx.EXPAND | wx.ALL, 3)
-        picbox_left.Add(pp13, 1, wx.EXPAND | wx.ALL, 3)
-        picbox_right.Add(pp21, 1, wx.EXPAND | wx.ALL, 3)
-        picbox_right.Add(pp22, 1, wx.EXPAND | wx.ALL, 3)
-        picbox_right.Add(pp23, 1, wx.EXPAND | wx.ALL, 3)
-        
-        image = wx.Image("resize.jpg",wx.BITMAP_TYPE_ANY)
-        temp = image.ConvertToBitmap()
-        
-        wx.StaticBitmap(parent = pp11, bitmap = temp, size = (320,160))
-       
-
-        picbox.Add(picbox_left, 1, wx.EXPAND)
-        picbox.Add(picbox_right, 1, wx.EXPAND)
-        '''
         
         mainbox.Add(typebox, 0, wx.EXPAND)
         mainbox.Add(picbox, 0, wx.EXPAND)
@@ -140,6 +179,13 @@ class UI(wx.Frame):
         wx.EVT_TOOL(self, 214, self.OnPic)
         wx.EVT_TOOL(self, 215, self.OnPic)
         wx.EVT_TOOL(self, 216, self.OnPic)
+	wx.EVT_TOOL(self, 221, self.OnDow)
+        wx.EVT_TOOL(self, 222, self.OnDow)
+        wx.EVT_TOOL(self, 223, self.OnDow)
+        wx.EVT_TOOL(self, 224, self.OnDow)
+        wx.EVT_TOOL(self, 225, self.OnDow)
+        wx.EVT_TOOL(self, 226, self.OnDow)
+	
 
         self.SetSizer(vbox)
         self.statusbar = self.CreateStatusBar()       
@@ -155,21 +201,36 @@ class UI(wx.Frame):
     def OnMine(self, event):
         self.statusbar.SetStatusText('Mine Command')
     def OnSearch(self, event):
-        self.statusbar.SetStatusText('Search Command')
-	im = wx.Image('/home/allen/GP/src/r22.png',wx.BITMAP_TYPE_ANY)
-        temp = im.ConvertToBitmap()
-        wx.StaticBitmap(parent = self.pic_panel_1, bitmap = temp, pos=(0,0), size = (300,150))
-        self.pic_panel_1.Refresh()
+        self.statusbar.SetStatusText('Please wait')
  	dl = download()
         a = dl.urlencode('a')
         b = dl.get_linklist(a)
         dl.downImageViaMutiThread(b)
-        dl.getpng()
 	im = wx.Image('/home/allen/GP/src/r11.png',wx.BITMAP_TYPE_ANY)
         temp = im.ConvertToBitmap()
-        wx.StaticBitmap(parent = self.pic_panel_1, bitmap = temp, pos=(0,0), size = (300,150))
+        wx.StaticBitmap(parent = self.pic_panel_1, bitmap = temp, pos=(0,0), size = (300,140))
 	self.pic_panel_1.Refresh()
-        print 'aaaaaaa'
+	im = wx.Image('/home/allen/GP/src/r12.png',wx.BITMAP_TYPE_ANY)
+        temp = im.ConvertToBitmap()
+        wx.StaticBitmap(parent = self.pic_panel_2, bitmap = temp, pos=(0,0), size = (300,140))
+        self.pic_panel_2.Refresh()
+	im = wx.Image('/home/allen/GP/src/r13.png',wx.BITMAP_TYPE_ANY)
+        temp = im.ConvertToBitmap()
+        wx.StaticBitmap(parent = self.pic_panel_3, bitmap = temp, pos=(0,0), size = (300,140))
+        self.pic_panel_3.Refresh()
+	im = wx.Image('/home/allen/GP/src/r14.png',wx.BITMAP_TYPE_ANY)
+        temp = im.ConvertToBitmap()
+        wx.StaticBitmap(parent = self.pic_panel_4, bitmap = temp, pos=(0,0), size = (300,140))
+        self.pic_panel_4.Refresh()
+	im = wx.Image('/home/allen/GP/src/r15.png',wx.BITMAP_TYPE_ANY)
+        temp = im.ConvertToBitmap()
+        wx.StaticBitmap(parent = self.pic_panel_5, bitmap = temp, pos=(0,0), size = (300,140))
+        self.pic_panel_5.Refresh()
+	im = wx.Image('/home/allen/GP/src/r16.png',wx.BITMAP_TYPE_ANY)
+        temp = im.ConvertToBitmap()
+        wx.StaticBitmap(parent = self.pic_panel_6, bitmap = temp, pos=(0,0), size = (300,140))
+        self.pic_panel_6.Refresh()
+	self.statusbar.SetStatusText('search done')
     def OnOpen(self, event):
         self.statusbar.SetStatusText('Open Command')
     def OnSave(self, event):
@@ -182,6 +243,8 @@ class UI(wx.Frame):
         pic_frame = pic_show(None, -1, 'pic', id)
         pic_frame.Center()
         pic_frame.Show(True)
+    def OnDow(self, event):
+	self.statusbar.SetStatusText('Download Command')
 
 class pic_show(wx.Frame):
     def __init__(self, parent, ID, title, id):
