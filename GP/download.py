@@ -8,8 +8,8 @@ import re
 
 class download():
     def urlencode(self, words):
-        st = u'变形金刚'
-        st = st.encode('gb2312')
+        #st = unicode(words, "utf-8")
+        st = words.encode('gb2312')
         m = {'par':st,}
         s = urllib.urlencode(m)
         s = s.strip('par=')

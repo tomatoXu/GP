@@ -3,6 +3,8 @@ from download import download
 import wx
 import Image
 import ImageEnhance
+global cur
+cur = 1
 
 class UI(wx.Frame):
     def __init__(self, parent, ID, title):
@@ -47,8 +49,8 @@ class UI(wx.Frame):
         toolbox.Add( toolbar, 0, wx.EXPAND)
         
         searchbar = wx.Panel(self, -1)
-        searchtext = wx.TextCtrl(searchbar, -1, 'search', pos = (20,5), size = (300, 40))
-        searchtext.SetInsertionPoint(0)
+        self.searchtext = wx.TextCtrl(searchbar, -1, 'search', pos = (20,5), size = (300, 40))
+        self.searchtext.SetInsertionPoint(0)
         
         bn_button = wx.ToolBar(self, -1, style = wx.TB_HORIZONTAL | wx.NO_BORDER)
         bn_button.AddSimpleTool(5, wx.Image('back.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap(), 'back', 'Back') 
@@ -172,7 +174,9 @@ class UI(wx.Frame):
         wx.EVT_TOOL(self, 2, self.OnMine)
         wx.EVT_TOOL(self, 3, self.OnQuit)
         wx.EVT_TOOL(self, 4, self.OnSearch)
-        
+        wx.EVT_TOOL(self, 5, self.OnBack)
+	wx.EVT_TOOL(self, 6, self.OnNext)
+
         wx.EVT_TOOL(self, 211, self.OnPic)
         wx.EVT_TOOL(self, 212, self.OnPic)
         wx.EVT_TOOL(self, 213, self.OnPic)
@@ -198,12 +202,16 @@ class UI(wx.Frame):
         out = im.resize((40,40))
         out.save("home.png")
         self.Refresh()
+
     def OnMine(self, event):
         self.statusbar.SetStatusText('Mine Command')
+
     def OnSearch(self, event):
+	key = self.searchtext.GetValue()
+	print key
         self.statusbar.SetStatusText('Please wait')
  	dl = download()
-        a = dl.urlencode('a')
+        a = dl.urlencode(key)
         b = dl.get_linklist(a)
         dl.downImageViaMutiThread(b)
 	im = wx.Image('/home/allen/GP/src/r11.png',wx.BITMAP_TYPE_ANY)
@@ -231,18 +239,86 @@ class UI(wx.Frame):
         wx.StaticBitmap(parent = self.pic_panel_6, bitmap = temp, pos=(0,0), size = (300,140))
         self.pic_panel_6.Refresh()
 	self.statusbar.SetStatusText('search done')
+
     def OnOpen(self, event):
         self.statusbar.SetStatusText('Open Command')
+
     def OnSave(self, event):
         self.statusbar.SetStatusText('Save Command')
+
     def OnQuit(self, event):
         self.Close()
+
+    def OnBack(self,event):
+	global cur
+	if (cur == 1):
+		self.statusbar.SetStatusText('It\'s already the first page')
+	else:
+		cur = cur - 1
+		im = wx.Image('/home/allen/GP/src/r'+str(cur)+'1.png',wx.BITMAP_TYPE_ANY)
+        	temp = im.ConvertToBitmap()
+        	wx.StaticBitmap(parent = self.pic_panel_1, bitmap = temp, pos=(0,0), size = (300,140))
+        	self.pic_panel_1.Refresh()
+        	im = wx.Image('/home/allen/GP/src/r'+str(cur)+'2.png',wx.BITMAP_TYPE_ANY)
+        	temp = im.ConvertToBitmap()
+        	wx.StaticBitmap(parent = self.pic_panel_2, bitmap = temp, pos=(0,0), size = (300,140))
+        	self.pic_panel_2.Refresh()
+        	im = wx.Image('/home/allen/GP/src/r'+str(cur)+'3.png',wx.BITMAP_TYPE_ANY)
+        	temp = im.ConvertToBitmap()
+        	wx.StaticBitmap(parent = self.pic_panel_3, bitmap = temp, pos=(0,0), size = (300,140))
+        	self.pic_panel_3.Refresh()
+        	im = wx.Image('/home/allen/GP/src/r'+str(cur)+'4.png',wx.BITMAP_TYPE_ANY)
+        	temp = im.ConvertToBitmap()
+        	wx.StaticBitmap(parent = self.pic_panel_4, bitmap = temp, pos=(0,0), size = (300,140))
+        	self.pic_panel_4.Refresh()
+        	im = wx.Image('/home/allen/GP/src/r'+str(cur)+'5.png',wx.BITMAP_TYPE_ANY)
+        	temp = im.ConvertToBitmap()
+        	wx.StaticBitmap(parent = self.pic_panel_5, bitmap = temp, pos=(0,0), size = (300,140))
+        	self.pic_panel_5.Refresh()
+        	im = wx.Image('/home/allen/GP/src/r'+str(cur)+'6.png',wx.BITMAP_TYPE_ANY)
+        	temp = im.ConvertToBitmap()
+        	wx.StaticBitmap(parent = self.pic_panel_6, bitmap = temp, pos=(0,0), size = (300,140))
+        	self.pic_panel_6.Refresh()
+        	self.statusbar.SetStatusText('page ' + str(cur))
+
+    def OnNext(self, event):
+	global cur
+        if (cur == 3):
+                self.statusbar.SetStatusText('It\'s already the last page')
+        else:
+                cur = cur + 1
+                im = wx.Image('/home/allen/GP/src/r'+str(cur)+'1.png',wx.BITMAP_TYPE_ANY)
+                temp = im.ConvertToBitmap()
+                wx.StaticBitmap(parent = self.pic_panel_1, bitmap = temp, pos=(0,0), size = (300,140))
+                self.pic_panel_1.Refresh()
+                im = wx.Image('/home/allen/GP/src/r'+str(cur)+'2.png',wx.BITMAP_TYPE_ANY)
+                temp = im.ConvertToBitmap()
+                wx.StaticBitmap(parent = self.pic_panel_2, bitmap = temp, pos=(0,0), size = (300,140))
+                self.pic_panel_2.Refresh()
+                im = wx.Image('/home/allen/GP/src/r'+str(cur)+'3.png',wx.BITMAP_TYPE_ANY)
+                temp = im.ConvertToBitmap()
+                wx.StaticBitmap(parent = self.pic_panel_3, bitmap = temp, pos=(0,0), size = (300,140))
+                self.pic_panel_3.Refresh()
+                im = wx.Image('/home/allen/GP/src/r'+str(cur)+'4.png',wx.BITMAP_TYPE_ANY)
+                temp = im.ConvertToBitmap()
+                wx.StaticBitmap(parent = self.pic_panel_4, bitmap = temp, pos=(0,0), size = (300,140))
+                self.pic_panel_4.Refresh()
+                im = wx.Image('/home/allen/GP/src/r'+str(cur)+'5.png',wx.BITMAP_TYPE_ANY)
+                temp = im.ConvertToBitmap()
+                wx.StaticBitmap(parent = self.pic_panel_5, bitmap = temp, pos=(0,0), size = (300,140))
+                self.pic_panel_5.Refresh()
+                im = wx.Image('/home/allen/GP/src/r'+str(cur)+'6.png',wx.BITMAP_TYPE_ANY)
+                temp = im.ConvertToBitmap()
+                wx.StaticBitmap(parent = self.pic_panel_6, bitmap = temp, pos=(0,0), size = (300,140))
+                self.pic_panel_6.Refresh()
+                self.statusbar.SetStatusText('page ' + str(cur))
     def OnPic(self, event):
         id = event.GetId()
         self.statusbar.SetStatusText('Show pic')
         pic_frame = pic_show(None, -1, 'pic', id)
         pic_frame.Center()
         pic_frame.Show(True)
+
     def OnDow(self, event):
 	self.statusbar.SetStatusText('Download Command')
 
@@ -260,7 +336,8 @@ class pic_show(wx.Frame):
         funcbar.Realize()
         
         #print self.tag
-        image = wx.Image("/home/allen/GP/src/r" + str(id - 200) + ".jpg",wx.BITMAP_TYPE_ANY)
+	global cur
+        image = wx.Image("/home/allen/GP/src/r" + str(cur) + str(id - 210) + ".jpg",wx.BITMAP_TYPE_ANY)
         self.size = image.GetSize()
         self.tag = id
         self.bright = 1.0
@@ -278,7 +355,7 @@ class pic_show(wx.Frame):
         self.button = wx.Button(self.panel, -1, "duibidu", pos=(310, 500))
         self.Bind(wx.EVT_BUTTON, self.OnContrast, self.button)
         '''
-	im = Image.open("/home/allen/GP/src/r" + str(id - 200) + ".jpg")
+	im = Image.open("/home/allen/GP/src/r" + str(cur) + str(id - 210) + ".jpg")
         wx.StaticBitmap(parent = self.panel, bitmap = temp, pos = (400 - (im.size[0]/2), 200 - (im.size[1]/2)), size = (1920, 1080))      
         pic_show_box.Add(self.panel, 0, wx.EXPAND)
         pic_show_box.Add(funcbar, 0, wx.EXPAND)
@@ -291,15 +368,16 @@ class pic_show(wx.Frame):
 	wx.EVT_TOOL(self, 3005, self.OnSave)
     
     def PreDeal(self, size, bright, contrast):
-        im = Image.open("/home/allen/GP/src/r" + str(self.tag - 200) + ".jpg")
+	global cur
+        im = Image.open("/home/allen/GP/src/r" + str(cur) + str(self.tag - 210) + ".jpg")
         out = im.resize((size[0], size[1]))
-        out.save("/home/allen/GP/src/rr" + str(self.tag - 200) + ".jpg")
+        out.save("/home/allen/GP/src/rr" + str(cur) + str(self.tag - 210) + ".jpg")
         enhancer1 = ImageEnhance.Brightness(out)
-        enhancer1.enhance(bright).save("/home/allen/GP/src/rr" + str(self.tag - 200) + ".jpg")
+        enhancer1.enhance(bright).save("/home/allen/GP/src/rr" + str(cur) + str(self.tag - 210) + ".jpg")
         print bright
-        temp = Image.open("/home/allen/GP/src/rr" + str(self.tag - 200) + ".jpg")
+        temp = Image.open("/home/allen/GP/src/rr" + str(cur) + str(self.tag - 210) + ".jpg")
         enhancer2 = ImageEnhance.Contrast(temp)
-        enhancer1.enhance(contrast).save("/home/allen/GP/src/rr" + str(self.tag - 200) + ".jpg")
+        enhancer1.enhance(contrast).save("/home/allen/GP/src/rr" + str(cur) + str(self.tag - 210) + ".jpg")
 	image = wx.Image("bg.jpg",wx.BITMAP_TYPE_ANY)
         temp = image.ConvertToBitmap()
         im = Image.open("bg.jpg")
@@ -307,9 +385,10 @@ class pic_show(wx.Frame):
         
     def OnSmall(self, event):
         #print self.tag
+	global cur
         self.PreDeal(self.size, self.bright, self.contrast)
         
-        im = Image.open("/home/allen/GP/src/rr" + str(self.tag - 200) + ".jpg")
+        im = Image.open("/home/allen/GP/src/rr" + str(cur) + str(self.tag - 210) + ".jpg")
         #print im.size
         if im.size[0] > 320:
             self.size[0] = self.size[0] - 64
@@ -317,58 +396,61 @@ class pic_show(wx.Frame):
             out = im.resize((self.size[0], self.size[1]))
         else:
             out = im        
-        out.save("/home/allen/GP/src/rr" + str(self.tag - 200) + ".jpg")
-        image = wx.Image("/home/allen/GP/src/rr" + str(self.tag - 200) + ".jpg",wx.BITMAP_TYPE_ANY)
+        out.save("/home/allen/GP/src/rr" + str(cur) + str(self.tag - 210) + ".jpg")
+        image = wx.Image("/home/allen/GP/src/rr" + str(cur) + str(self.tag - 210) + ".jpg",wx.BITMAP_TYPE_ANY)
         temp = image.ConvertToBitmap()
-	im = Image.open("/home/allen/GP/src/rr" + str(self.tag - 200) + ".jpg")
+	im = Image.open("/home/allen/GP/src/rr" + str(cur) + str(self.tag - 210) + ".jpg")
         wx.StaticBitmap(parent = self.panel, bitmap = temp, pos = (400 - (im.size[0]/2), 200 - (im.size[1]/2)), size = (800,400))
         self.panel.Refresh()
         print self.size
 
     def OnBig(self, event):
+	global cur
         self.PreDeal(self.size, self.bright, self.contrast)
-        im = Image.open("/home/allen/GP/src/rr" + str(self.tag - 200) + ".jpg")
+        im = Image.open("/home/allen/GP/src/rr" + str(cur) + str(self.tag - 210) + ".jpg")
         if im.size[0] < 1280:
             self.size[0] = self.size[0] + 64
             self.size[1] = self.size[1] + 32
             out = im.resize((self.size[0], self.size[1]))
         else:
             out = im
-        out.save("/home/allen/GP/src/rr" + str(self.tag - 200) + ".jpg")
-        image = wx.Image("/home/allen/GP/src/rr" + str(self.tag - 200) + ".jpg",wx.BITMAP_TYPE_ANY)
+        out.save("/home/allen/GP/src/rr" + str(cur) + str(self.tag - 210) + ".jpg")
+        image = wx.Image("/home/allen/GP/src/rr" + str(cur) + str(self.tag - 210) + ".jpg",wx.BITMAP_TYPE_ANY)
         temp = image.ConvertToBitmap()
-	im = Image.open("/home/allen/GP/src/rr" + str(self.tag - 200) + ".jpg")
+	im = Image.open("/home/allen/GP/src/rr" + str(cur) + str(self.tag - 210) + ".jpg")
         wx.StaticBitmap(parent = self.panel, bitmap = temp, pos = (400 - (im.size[0]/2), 200 - (im.size[1]/2)), size = (800,400))
         self.panel.Refresh()
         print self.size
         
     def OnBright(self, event):
+	global cur
         self.PreDeal(self.size, self.bright, self.contrast)
         self.bright = self.bright + 1.0       
-        im = Image.open("/home/allen/GP/src/rr" + str(self.tag - 200) + ".jpg")
+        im = Image.open("/home/allen/GP/src/rr" + str(cur) + str(self.tag - 210) + ".jpg")
         enhancer = ImageEnhance.Brightness(im)
         if self.bright > 8.0:
             self.bright = self.bright - 8.0
         factor = self.bright / 4.0
-        enhancer.enhance(factor).save("/home/allen/GP/src/rr" + str(self.tag - 200) + ".jpg")
-        image = wx.Image("/home/allen/GP/src/rr" + str(self.tag - 200) + ".jpg",wx.BITMAP_TYPE_ANY)
+        enhancer.enhance(factor).save("/home/allen/GP/src/rr" + str(cur) + str(self.tag - 210) + ".jpg")
+        image = wx.Image("/home/allen/GP/src/rr" + str(cur) + str(self.tag - 210) + ".jpg",wx.BITMAP_TYPE_ANY)
         temp = image.ConvertToBitmap()
-	im = Image.open("/home/allen/GP/src/rr" + str(self.tag - 200) + ".jpg")
+	im = Image.open("/home/allen/GP/src/rr" + str(cur) + str(self.tag - 210) + ".jpg")
         wx.StaticBitmap(parent = self.panel, bitmap = temp, pos = (400 - (im.size[0]/2), 200 - (im.size[1]/2)), size = (800,400))
         self.panel.Refresh()
         
     def OnContrast(self, event):
+	global cur
         self.PreDeal(self.size, self.bright, self.contrast)
         self.contrast = self.contrast + 1.0
-        im = Image.open("/home/allen/GP/src/rr" + str(self.tag - 200) + ".jpg")
+        im = Image.open("/home/allen/GP/src/rr" + str(cur) + str(self.tag - 210) + ".jpg")
         enhancer = ImageEnhance.Contrast(im)
         if self.contrast > 8.0:
             self.contrast = self.bright - 8.0
         factor = self.contrast / 4.0
-        enhancer.enhance(factor).save("/home/allen/GP/src/rr" + str(self.tag - 200) + ".jpg")
-        image = wx.Image("/home/allen/GP/src/rr" + str(self.tag - 200) + ".jpg",wx.BITMAP_TYPE_ANY)
+        enhancer.enhance(factor).save("/home/allen/GP/src/rr" + str(cur) + str(self.tag - 210) + ".jpg")
+        image = wx.Image("/home/allen/GP/src/rr" + str(cur) + str(self.tag - 210) + ".jpg",wx.BITMAP_TYPE_ANY)
         temp = image.ConvertToBitmap()
-	im = Image.open("/home/allen/GP/src/rr" + str(self.tag - 200) + ".jpg")
+	im = Image.open("/home/allen/GP/src/rr" + str(cur) + str(self.tag - 210) + ".jpg")
         wx.StaticBitmap(parent = self.panel, bitmap = temp, pos = (400 - (im.size[0]/2), 200 - (im.size[1]/2)), size = (800,400))
         self.panel.Refresh()
 
