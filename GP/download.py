@@ -5,7 +5,6 @@ import threading
 import Image
 from bs4 import BeautifulSoup
 import re
-
 class download():
     def urlencode(self, words):
         #st = unicode(words, "utf-8")
@@ -15,8 +14,8 @@ class download():
         s = s.strip('par=')
         return s
     
-    def get_linklist(self, url_words):
-        url = 'http://www.netbian.com/e/sch/index.php?keyboard='+url_words+'&submit=' 
+    def get_linklist(self, url_words, page):
+        url = 'http://www.netbian.com/e/sch/index.php?page='+str(page)+'&keyboard='+url_words 
         headers = {        
                    "Host":"www.netbian.com",
                    "User-Agent": "Mozilla/5.0(X11; Ubuntu; Linux x86_64; rv:31.0)Gecko/20100101 Firefox/31.0",
@@ -99,7 +98,7 @@ class download():
 if __name__ == "__main__":
     dl = download()
     a = dl.urlencode('a')
-    b = dl.get_linklist(a)
+    b = dl.get_linklist(a, 0)
     dl.downImageViaMutiThread(b)
 #    dl.getpng()
 #    print b

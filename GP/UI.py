@@ -217,12 +217,14 @@ class UI(wx.Frame):
         self.statusbar.SetStatusText('Mine Command')
 
     def OnSearch(self, event):
+	global cur
+	cur = 1
 	key = self.searchtext.GetValue()
 	print key
         self.statusbar.SetStatusText('Please wait')
  	dl = download()
         a = dl.urlencode(key)
-        b = dl.get_linklist(a)
+        b = dl.get_linklist(a, 0)
         dl.downImageViaMutiThread(b)
 	im = wx.Image('/home/allen/GP/src/r11.png',wx.BITMAP_TYPE_ANY)
         temp = im.ConvertToBitmap()
@@ -350,7 +352,7 @@ class UI(wx.Frame):
         self.statusbar.SetStatusText('Please wait')
         dl = download()
         a = dl.urlencode(key)
-        b = dl.get_linklist(a)
+        b = dl.get_linklist(a, 0)
         dl.downImageViaMutiThread(b)
         im = wx.Image('/home/allen/GP/src/r11.png',wx.BITMAP_TYPE_ANY)
         temp = im.ConvertToBitmap()
