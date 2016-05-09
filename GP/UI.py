@@ -2,12 +2,19 @@
 #!/usr/bin/python
 from download import download
 import wx
+import os
+import math
 import Image
 import ImageEnhance
+import re
+global word
+word = ""
 global cur
 cur = 1
 global dir
 dir = "/home/allen/图片/"
+global max_page
+max_page = 0
 
 class UI(wx.Frame):
     def __init__(self, parent, ID, title):
@@ -218,14 +225,25 @@ class UI(wx.Frame):
 
     def OnSearch(self, event):
 	global cur
+	global max_page
+	global word
 	cur = 1
 	key = self.searchtext.GetValue()
 	print key
+	word = key
         self.statusbar.SetStatusText('Please wait')
  	dl = download()
         a = dl.urlencode(key)
         b = dl.get_linklist(a, 0)
-        dl.downImageViaMutiThread(b)
+	c = dl.getnum()
+	if (c == 0):
+		dlg = wx.MessageDialog(None, "无搜索结果", "无结果", wx.ID_OK)
+        	if dlg.ShowModal() == wx.ID_OK:
+        		dlg.Destroy()
+		return
+	max_page = int(math.ceil(dl.getnum() / 6.0))
+        print dl.getnum(),max_page
+        dl.downImageViaMutiThread(b, 0)
 	im = wx.Image('/home/allen/GP/src/r11.png',wx.BITMAP_TYPE_ANY)
         temp = im.ConvertToBitmap()
         wx.StaticBitmap(parent = self.pic_panel_1, bitmap = temp, pos=(0,0), size = (300,140))
@@ -250,6 +268,11 @@ class UI(wx.Frame):
         temp = im.ConvertToBitmap()
         wx.StaticBitmap(parent = self.pic_panel_6, bitmap = temp, pos=(0,0), size = (300,140))
         self.pic_panel_6.Refresh()
+	path = '/home/allen/GP/src'
+	filelist = os.listdir(path)
+	for file in filelist:
+        	if (not re.match(r'r[1-3][1-6].[jpg,png]',file)):
+                	os.remove(path +'/'+file)
 	self.statusbar.SetStatusText('search done')
 
     def OnOpen(self, event):
@@ -295,35 +318,51 @@ class UI(wx.Frame):
 
     def OnNext(self, event):
 	global cur
-        if (cur == 3):
+	global max_page
+	global word
+	filename = r'/home/allen/GP/src/r'+str(cur+1)+'1.png'
+        if (cur == max_page):
                 self.statusbar.SetStatusText('It\'s already the last page')
-        else:
-                cur = cur + 1
-                im = wx.Image('/home/allen/GP/src/r'+str(cur)+'1.png',wx.BITMAP_TYPE_ANY)
-                temp = im.ConvertToBitmap()
-                wx.StaticBitmap(parent = self.pic_panel_1, bitmap = temp, pos=(0,0), size = (300,140))
-                self.pic_panel_1.Refresh()
-                im = wx.Image('/home/allen/GP/src/r'+str(cur)+'2.png',wx.BITMAP_TYPE_ANY)
-                temp = im.ConvertToBitmap()
-                wx.StaticBitmap(parent = self.pic_panel_2, bitmap = temp, pos=(0,0), size = (300,140))
-                self.pic_panel_2.Refresh()
-                im = wx.Image('/home/allen/GP/src/r'+str(cur)+'3.png',wx.BITMAP_TYPE_ANY)
-                temp = im.ConvertToBitmap()
-                wx.StaticBitmap(parent = self.pic_panel_3, bitmap = temp, pos=(0,0), size = (300,140))
-                self.pic_panel_3.Refresh()
-                im = wx.Image('/home/allen/GP/src/r'+str(cur)+'4.png',wx.BITMAP_TYPE_ANY)
-                temp = im.ConvertToBitmap()
-                wx.StaticBitmap(parent = self.pic_panel_4, bitmap = temp, pos=(0,0), size = (300,140))
-                self.pic_panel_4.Refresh()
-                im = wx.Image('/home/allen/GP/src/r'+str(cur)+'5.png',wx.BITMAP_TYPE_ANY)
-                temp = im.ConvertToBitmap()
-                wx.StaticBitmap(parent = self.pic_panel_5, bitmap = temp, pos=(0,0), size = (300,140))
-                self.pic_panel_5.Refresh()
-                im = wx.Image('/home/allen/GP/src/r'+str(cur)+'6.png',wx.BITMAP_TYPE_ANY)
-                temp = im.ConvertToBitmap()
-                wx.StaticBitmap(parent = self.pic_panel_6, bitmap = temp, pos=(0,0), size = (300,140))
-                self.pic_panel_6.Refresh()
-                self.statusbar.SetStatusText('page ' + str(cur))
+		return
+	elif (not os.path.exists(filename)):
+		print 'aaaa'
+		dl = download()
+		a = dl.urlencode(word)
+        	b = dl.get_linklist(a, cur/3)
+        	c = dl.getnum()
+        	dl.downImageViaMutiThread(b, cur/3)
+        cur = cur + 1
+	if (os.path.exists(r'/home/allen/GP/src/r'+str(cur)+'1.png')):
+        	im = wx.Image('/home/allen/GP/src/r'+str(cur)+'1.png',wx.BITMAP_TYPE_ANY)
+        	temp = im.ConvertToBitmap()
+        	wx.StaticBitmap(parent = self.pic_panel_1, bitmap = temp, pos=(0,0), size = (300,140))
+        	self.pic_panel_1.Refresh()
+	if (os.path.exists(r'/home/allen/GP/src/r'+str(cur)+'2.png')):
+        	im = wx.Image('/home/allen/GP/src/r'+str(cur)+'2.png',wx.BITMAP_TYPE_ANY)
+        	temp = im.ConvertToBitmap()
+        	wx.StaticBitmap(parent = self.pic_panel_2, bitmap = temp, pos=(0,0), size = (300,140))
+        	self.pic_panel_2.Refresh()
+        if (os.path.exists(r'/home/allen/GP/src/r'+str(cur)+'3.png')):
+		im = wx.Image('/home/allen/GP/src/r'+str(cur)+'3.png',wx.BITMAP_TYPE_ANY)
+        	temp = im.ConvertToBitmap()
+        	wx.StaticBitmap(parent = self.pic_panel_3, bitmap = temp, pos=(0,0), size = (300,140))
+        	self.pic_panel_3.Refresh()
+        if (os.path.exists(r'/home/allen/GP/src/r'+str(cur)+'4.png')):
+		im = wx.Image('/home/allen/GP/src/r'+str(cur)+'4.png',wx.BITMAP_TYPE_ANY)
+        	temp = im.ConvertToBitmap()
+        	wx.StaticBitmap(parent = self.pic_panel_4, bitmap = temp, pos=(0,0), size = (300,140))
+        	self.pic_panel_4.Refresh()
+        if (os.path.exists(r'/home/allen/GP/src/r'+str(cur)+'5.png')):
+		im = wx.Image('/home/allen/GP/src/r'+str(cur)+'5.png',wx.BITMAP_TYPE_ANY)
+        	temp = im.ConvertToBitmap()
+        	wx.StaticBitmap(parent = self.pic_panel_5, bitmap = temp, pos=(0,0), size = (300,140))
+        	self.pic_panel_5.Refresh()
+	if (os.path.exists(r'/home/allen/GP/src/r'+str(cur)+'6.png')):
+        	im = wx.Image('/home/allen/GP/src/r'+str(cur)+'6.png',wx.BITMAP_TYPE_ANY)
+        	temp = im.ConvertToBitmap()
+        	wx.StaticBitmap(parent = self.pic_panel_6, bitmap = temp, pos=(0,0), size = (300,140))
+        	self.pic_panel_6.Refresh()
+        self.statusbar.SetStatusText('page ' + str(cur))
 
     def OnPic(self, event):
         id = event.GetId()
@@ -353,7 +392,9 @@ class UI(wx.Frame):
         dl = download()
         a = dl.urlencode(key)
         b = dl.get_linklist(a, 0)
-        dl.downImageViaMutiThread(b)
+	max_page = int(math.ceil(dl.getnum() / 6.0))
+	print dl.getnum(),max_page
+        dl.downImageViaMutiThread(b, 0)
         im = wx.Image('/home/allen/GP/src/r11.png',wx.BITMAP_TYPE_ANY)
         temp = im.ConvertToBitmap()
         wx.StaticBitmap(parent = self.pic_panel_1, bitmap = temp, pos=(0,0), size = (300,140))
@@ -378,6 +419,11 @@ class UI(wx.Frame):
         temp = im.ConvertToBitmap()
         wx.StaticBitmap(parent = self.pic_panel_6, bitmap = temp, pos=(0,0), size = (300,140))
         self.pic_panel_6.Refresh()
+	path = '/home/allen/GP/src'
+	filelist = os.listdir(path)
+	for file in filelist:
+        	if (not re.match(r'r[1-3][1-6].[jpg,png]',file)):
+                	os.remove(path +'/'+file)
         self.statusbar.SetStatusText('search done')
 
 

@@ -5,6 +5,8 @@ import threading
 import Image
 from bs4 import BeautifulSoup
 import re
+global num
+num = 0
 class download():
     def urlencode(self, words):
         #st = unicode(words, "utf-8")
@@ -15,6 +17,7 @@ class download():
         return s
     
     def get_linklist(self, url_words, page):
+	global num
         url = 'http://www.netbian.com/e/sch/index.php?page='+str(page)+'&keyboard='+url_words 
         headers = {        
                    "Host":"www.netbian.com",
@@ -27,6 +30,12 @@ class download():
         web = requests.get(url,headers = headers)
 	source = web.text
 	linklist = re.findall(r"/desk/[0-9]{1,7}\.htm",source)
+	res = re.findall(r"[0-9]{1,7}"+u'个',source)
+	if len(res):
+		num = int(res[0][:-1])
+		print 'num',num
+	else:
+		num = 0
 	newlist = list(set(linklist))
         return newlist    
     
@@ -61,8 +70,12 @@ class download():
             new = "".join(str_list)
 	    print new
             out.save("/home/allen/GP/src/"+new+".png")
+    
+    def getnum(self):
+	global num
+	return num
  
-    def downImageViaMutiThread(self, linklist ):
+    def downImageViaMutiThread(self, linklist, page):
 	headers = {
                    "Host":"www.netbian.com",
                    "User-Agent": "Mozilla/5.0(X11; Ubuntu; Linux x86_64; rv:31.0)Gecko/20100101 Firefox/31.0",
@@ -80,7 +93,7 @@ class download():
 	    link = re.findall(r"img src=\"http:[\.\/a-z0-9]*\.jpg",source)
 	    des_link = link[0].lstrip('img src=\"')
 	    print "link:",des_link
-            filename = "r" + str(count/6 + 1) + str(count%6 + 1) + ".jpg"
+            filename = "r" + str(count/6 + 1 + page * 3) + str(count%6 + 1) + ".jpg"
             t = threading.Thread(target=self.saveImage,args=(des_link,filename))
             count = count+1
             task_threads.append(t)
@@ -97,8 +110,15 @@ class download():
 			out.save("/home/allen/GP/src/r"+str(i+1)+str(j+1)+".png")
 if __name__ == "__main__":
     dl = download()
-    a = dl.urlencode('a')
+    a = dl.urlencode(u'风景')
     b = dl.get_linklist(a, 0)
-    dl.downImageViaMutiThread(b)
+    s = dl.getnum()
+    print s
+    dl.downImageViaMutiThread(b, 0)
+    b = dl.get_linklist(a, 1)
+    s = dl.getnum()
+    print s
+    dl.downImageViaMutiThread(b, 1)
+
 #    dl.getpng()
 #    print b
