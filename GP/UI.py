@@ -215,10 +215,49 @@ class UI(wx.Frame):
 #响应函数
     def OnHome(self, event):
         self.statusbar.SetStatusText('Home Command')
-        im = Image.open("home.png")
-        out = im.resize((40,40))
-        out.save("home.png")
-        self.Refresh()
+        global cur
+        global max_page
+        global word
+        cur = 1
+        word = unicode("高清", "utf-8")
+        self.statusbar.SetStatusText('Please wait')
+        dl = download()
+        a = dl.urlencode(word)
+        b = dl.get_linklist(a, 0)
+        c = dl.getnum()
+        max_page = int(math.ceil(dl.getnum() / 6.0))
+        print dl.getnum(),max_page
+        dl.downImageViaMutiThread(b, 0)
+        im = wx.Image('/home/allen/GP/src/r11.png',wx.BITMAP_TYPE_ANY)
+        temp = im.ConvertToBitmap()
+        wx.StaticBitmap(parent = self.pic_panel_1, bitmap = temp, pos=(0,0), size = (300,140))
+        self.pic_panel_1.Refresh()
+        im = wx.Image('/home/allen/GP/src/r12.png',wx.BITMAP_TYPE_ANY)
+        temp = im.ConvertToBitmap()
+        wx.StaticBitmap(parent = self.pic_panel_2, bitmap = temp, pos=(0,0), size = (300,140))
+        self.pic_panel_2.Refresh()
+        im = wx.Image('/home/allen/GP/src/r13.png',wx.BITMAP_TYPE_ANY)
+        temp = im.ConvertToBitmap()
+        wx.StaticBitmap(parent = self.pic_panel_3, bitmap = temp, pos=(0,0), size = (300,140))
+        self.pic_panel_3.Refresh()
+        im = wx.Image('/home/allen/GP/src/r14.png',wx.BITMAP_TYPE_ANY)
+        temp = im.ConvertToBitmap()
+        wx.StaticBitmap(parent = self.pic_panel_4, bitmap = temp, pos=(0,0), size = (300,140))
+        self.pic_panel_4.Refresh()
+        im = wx.Image('/home/allen/GP/src/r15.png',wx.BITMAP_TYPE_ANY)
+        temp = im.ConvertToBitmap()
+        wx.StaticBitmap(parent = self.pic_panel_5, bitmap = temp, pos=(0,0), size = (300,140))
+        self.pic_panel_5.Refresh()
+        im = wx.Image('/home/allen/GP/src/r16.png',wx.BITMAP_TYPE_ANY)
+        temp = im.ConvertToBitmap()
+        wx.StaticBitmap(parent = self.pic_panel_6, bitmap = temp, pos=(0,0), size = (300,140))
+        self.pic_panel_6.Refresh()
+        path = '/home/allen/GP/src'
+        filelist = os.listdir(path)
+        for file in filelist:
+                if (not re.match(r'r[1-3][1-6].[jpg,png]',file)):
+                        os.remove(path +'/'+file)
+        self.statusbar.SetStatusText('search done')
 
     def OnMine(self, event):
         self.statusbar.SetStatusText('Mine Command')
@@ -374,12 +413,11 @@ class UI(wx.Frame):
     def OnSet(self, event):
 	global dir
 	self.statusbar.SetStatusText('Download Command')
-	dlg = wx.MessageDialog(None, "保存路径："+dir, "保存确认", wx.YES)
-        if dlg.ShowModal() == wx.ID_YES:
-                im = Image.open("/home/allen/GP/src/r" + str(cur) + str(event.GetId() - 220) + ".jpg")
-                im.save(dir + 'name' + '.jpg')
-
-        dlg.Destroy()
+	dlg = wx.MessageDialog(None, "设置壁纸成功", "设置成功", wx.OK)
+        im = Image.open("/home/allen/GP/src/r" + str(cur) + str(event.GetId() - 220) + ".jpg")
+        im.save(dir + 'name' + '.jpg')
+        if dlg.ShowModal() == wx.ID_OK:
+        	dlg.Destroy()
 
 
     def OnKey(self, event):
