@@ -138,17 +138,17 @@ class UI(wx.Frame):
         picbox_32.Add(self.pic_panel_6, 0, wx.EXPAND)
 
         pic_1.AddSimpleTool(211, wx.Image('view.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap(), '', '')
-        pic_1.AddSimpleTool(221, wx.Image('view.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap(), '', '')
+        pic_1.AddSimpleTool(221, wx.Image('download.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap(), '', '')
         pic_2.AddSimpleTool(212, wx.Image('view.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap(), '', '')
-        pic_2.AddSimpleTool(222, wx.Image('view.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap(), '', '')
+        pic_2.AddSimpleTool(222, wx.Image('download.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap(), '', '')
 	pic_3.AddSimpleTool(213, wx.Image('view.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap(), '', '')
-        pic_3.AddSimpleTool(223, wx.Image('view.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap(), '', '')
+        pic_3.AddSimpleTool(223, wx.Image('download.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap(), '', '')
 	pic_4.AddSimpleTool(214, wx.Image('view.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap(), '', '')
-        pic_4.AddSimpleTool(224, wx.Image('view.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap(), '', '')
+        pic_4.AddSimpleTool(224, wx.Image('download.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap(), '', '')
 	pic_5.AddSimpleTool(215, wx.Image('view.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap(), '', '')
-        pic_5.AddSimpleTool(225, wx.Image('view.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap(), '', '')
+        pic_5.AddSimpleTool(225, wx.Image('download.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap(), '', '')
 	pic_6.AddSimpleTool(216, wx.Image('view.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap(), '', '')
-        pic_6.AddSimpleTool(226, wx.Image('view.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap(), '', '')
+        pic_6.AddSimpleTool(226, wx.Image('download.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap(), '', '')
 
         pic_1.Realize()
         pic_2.Realize()
@@ -193,12 +193,12 @@ class UI(wx.Frame):
         wx.EVT_TOOL(self, 214, self.OnPic)
         wx.EVT_TOOL(self, 215, self.OnPic)
         wx.EVT_TOOL(self, 216, self.OnPic)
-	wx.EVT_TOOL(self, 221, self.OnDow)
-        wx.EVT_TOOL(self, 222, self.OnDow)
-        wx.EVT_TOOL(self, 223, self.OnDow)
-        wx.EVT_TOOL(self, 224, self.OnDow)
-        wx.EVT_TOOL(self, 225, self.OnDow)
-        wx.EVT_TOOL(self, 226, self.OnDow)
+	wx.EVT_TOOL(self, 221, self.OnSet)
+        wx.EVT_TOOL(self, 222, self.OnSet)
+        wx.EVT_TOOL(self, 223, self.OnSet)
+        wx.EVT_TOOL(self, 224, self.OnSet)
+        wx.EVT_TOOL(self, 225, self.OnSet)
+        wx.EVT_TOOL(self, 226, self.OnSet)
 
 	wx.EVT_TOOL(self, 11, self.OnKey)
 	wx.EVT_TOOL(self, 12, self.OnKey)
@@ -371,10 +371,21 @@ class UI(wx.Frame):
         pic_frame.Center()
         pic_frame.Show(True)
 
-    def OnDow(self, event):
+    def OnSet(self, event):
+	global dir
 	self.statusbar.SetStatusText('Download Command')
+	dlg = wx.MessageDialog(None, "保存路径："+dir, "保存确认", wx.YES)
+        if dlg.ShowModal() == wx.ID_YES:
+                im = Image.open("/home/allen/GP/src/r" + str(cur) + str(event.GetId() - 220) + ".jpg")
+                im.save(dir + 'name' + '.jpg')
+
+        dlg.Destroy()
+
 
     def OnKey(self, event):
+	global word
+	global cur
+	cur = 1
 	id = event.GetId()
 	print id
         values = {
@@ -388,6 +399,7 @@ class UI(wx.Frame):
 	key = values.get(id, "推荐")
         print key
 	key = unicode(key, "utf-8")
+	word = key
         self.statusbar.SetStatusText('Please wait')
         dl = download()
         a = dl.urlencode(key)
@@ -465,6 +477,10 @@ class pic_show(wx.Frame):
         pic_show_box.Add(self.panel, 0, wx.EXPAND)
         pic_show_box.Add(funcbar, 0, wx.EXPAND)
         self.SetSizer(pic_show_box)
+	
+	im = Image.open("/home/allen/GP/src/r" + str(cur) + str(self.tag - 210) + ".jpg")
+        out = im.resize((self.size[0], self.size[1]))
+        out.save("/home/allen/GP/src/rr" + str(cur) + str(self.tag - 210) + ".jpg")
         
         wx.EVT_TOOL(self, 3001, self.OnSmall)
         wx.EVT_TOOL(self, 3002, self.OnBig)
@@ -561,11 +577,12 @@ class pic_show(wx.Frame):
 
     def OnSave(self, event):
 	global dir
+	global cur
 #	im = Image.open("/home/allen/GP/src/rr" + str(self.tag - 200) + ".jpg")
 #	im.save(dir + 'name' + '.jpg')
 	dlg = wx.MessageDialog(None, "保存路径："+dir, "保存确认", wx.YES)
 	if dlg.ShowModal() == wx.ID_YES:
-		im = Image.open("/home/allen/GP/src/rr" + str(self.tag - 200) + ".jpg")
+		im = Image.open("/home/allen/GP/src/rr" + str(cur) + str(self.tag - 210) + ".jpg")
         	im.save(dir + 'name' + '.jpg')
 	
 	dlg.Destroy()
