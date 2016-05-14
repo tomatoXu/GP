@@ -112,13 +112,7 @@ if __name__ == "__main__":
     dl = download()
     a = dl.urlencode(u'风景')
     b = dl.get_linklist(a, 0)
-    s = dl.getnum()
-    print s
     dl.downImageViaMutiThread(b, 0)
-    b = dl.get_linklist(a, 1)
-    s = dl.getnum()
-    print s
-    dl.downImageViaMutiThread(b, 1)
 
 #    dl.getpng()
 #    print b

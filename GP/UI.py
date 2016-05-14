@@ -12,7 +12,7 @@ word = ""
 global cur
 cur = 1
 global dir
-dir = "/home/allen/图片/"
+dir = "/home/allen/GP/save/"
 global max_page
 max_page = 0
 
@@ -411,11 +411,11 @@ class UI(wx.Frame):
         pic_frame.Show(True)
 
     def OnSet(self, event):
-	global dir
-	self.statusbar.SetStatusText('Download Command')
+	global cur
+	self.statusbar.SetStatusText('Set Command')
 	dlg = wx.MessageDialog(None, "设置壁纸成功", "设置成功", wx.OK)
         im = Image.open("/home/allen/GP/src/r" + str(cur) + str(event.GetId() - 220) + ".jpg")
-        im.save(dir + 'name' + '.jpg')
+        im.save("/home/allen/图片/" + 'name' + '.jpg')
         if dlg.ShowModal() == wx.ID_OK:
         	dlg.Destroy()
 
@@ -488,6 +488,7 @@ class pic_show(wx.Frame):
         funcbar.AddSimpleTool(3003, wx.Image('liangdu.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap(), 'bright', 'Bright')
         funcbar.AddSimpleTool(3004, wx.Image('duibidu.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap(), 'contrast', 'Contrast')
 	funcbar.AddSimpleTool(3005, wx.Image('save.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap(), 'save', 'Save')
+	funcbar.AddSimpleTool(3006, wx.Image('set.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap(), 'set', 'Set')
         funcbar.Realize()
         
         #print self.tag
@@ -525,7 +526,8 @@ class pic_show(wx.Frame):
         wx.EVT_TOOL(self, 3003, self.OnBright)
         wx.EVT_TOOL(self, 3004, self.OnContrast)
 	wx.EVT_TOOL(self, 3005, self.OnSave)
-    
+	wx.EVT_TOOL(self, 3006, self.OnSet)    
+
     def PreDeal(self, size, bright, contrast):
 	global cur
         im = Image.open("/home/allen/GP/src/r" + str(cur) + str(self.tag - 210) + ".jpg")
@@ -616,15 +618,30 @@ class pic_show(wx.Frame):
     def OnSave(self, event):
 	global dir
 	global cur
-#	im = Image.open("/home/allen/GP/src/rr" + str(self.tag - 200) + ".jpg")
-#	im.save(dir + 'name' + '.jpg')
-	dlg = wx.MessageDialog(None, "保存路径："+dir, "保存确认", wx.YES)
-	if dlg.ShowModal() == wx.ID_YES:
-		im = Image.open("/home/allen/GP/src/rr" + str(cur) + str(self.tag - 210) + ".jpg")
-        	im.save(dir + 'name' + '.jpg')
-	
+	dlg = wx.TextEntryDialog(self, "保存路径：" + dir + "请输入保存图片名称", "保存确认","")
+	if dlg.ShowModal() == wx.ID_OK:
+		name = dlg.GetValue()
+		if os.path.exists(dir + name +".jpg"):
+			warning = wx.MessageDialog(None, dir + name + u".jpg 已存在是否覆盖", "warning", wx.YES_NO)
+			if warning.ShowModal() == wx.ID_YES:
+				im = Image.open("/home/allen/GP/src/rr" + str(cur) + str(self.tag - 210) + ".jpg")
+		                im.save(dir + name + '.jpg')
+				warning.Destroy()
+			elif warning.ShowModal() == wx.ID_NO:
+				warning.Destroy()
+		else:
+			im = Image.open("/home/allen/GP/src/rr" + str(cur) + str(self.tag - 210) + ".jpg")
+                        im.save(dir + name + '.jpg')
 	dlg.Destroy()
 
+    def OnSet(self, event):
+        global cur
+        dlg = wx.MessageDialog(None, "设置壁纸成功", "设置成功", wx.OK)
+        im = Image.open("/home/allen/GP/src/rr" + str(cur) + str(self.tag - 210) + ".jpg")
+        im.save("/home/allen/图片/" + 'name' + '.jpg')
+        if dlg.ShowModal() == wx.ID_OK:
+                dlg.Destroy()
+	
 
 class MyApp(wx.App):
     def OnInit(self):
