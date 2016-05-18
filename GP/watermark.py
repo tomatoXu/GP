@@ -64,12 +64,12 @@ def watermark(imagefile, markfile, position=POSITION[4], opacity=1):
     return Image.composite(layer, im, layer)  
    
 def test():  
-    watermark('r11.jpg',MARKIMAGE,POSITION[0],opacity=0.7).save("watermarked_lt.jpg",quality=90)  
-    watermark('r11.jpg',MARKIMAGE,POSITION[1],opacity=0.7).save("watermarked_rt.jpg",quality=90)  
-    watermark('r11.jpg',MARKIMAGE,POSITION[2],opacity=0.7).save("watermarked_center.jpg",quality=90)  
-    watermark('r11.jpg',MARKIMAGE,POSITION[3],opacity=0.7).save("watermarked_lb.jpg",quality=90)  
-    watermark('r11.jpg',MARKIMAGE,POSITION[4],opacity=0.7).save("watermarked_rb.jpg",quality=90)  
-    watermark('r11.jpg',MARKIMAGE,'title',opacity=0.7).save("watermarked_title.jpg",quality=90)  
-    watermark('r11.jpg',MARKIMAGE,'scale',opacity=0.7).save("watermarked_scale.jpg",quality=90)  
+    watermark('r12.jpg',MARKIMAGE,POSITION[0],opacity=0.7).save("watermarked_lt.jpg",quality=90)  
+    watermark('r12.jpg',MARKIMAGE,POSITION[1],opacity=0.7).save("watermarked_rt.jpg",quality=90)  
+    watermark('r12.jpg',MARKIMAGE,POSITION[2],opacity=0.7).save("watermarked_center.jpg",quality=90)  
+    watermark('r12.jpg',MARKIMAGE,POSITION[3],opacity=0.7).save("watermarked_lb.jpg",quality=90)  
+    watermark('r12.jpg',MARKIMAGE,POSITION[4],opacity=0.7).save("watermarked_rb.jpg",quality=90)  
+    watermark('r12.jpg',MARKIMAGE,'title',opacity=0.7).save("watermarked_title.jpg",quality=90)  
+    watermark('r12.jpg',MARKIMAGE,'scale',opacity=0.7).save("watermarked_scale.jpg",quality=90)  
 if __name__ == '__main__':  
     test() 
