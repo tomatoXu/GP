@@ -6,6 +6,7 @@ import os
 import math
 import Image
 import ImageEnhance
+import ImageFilter
 import re
 global word
 word = ""
@@ -180,6 +181,7 @@ class UI(wx.Frame):
         vbox.Add(toolbox, 0, wx.EXPAND)
         vbox.Add(mainbox, -1, wx.EXPAND)
 
+	wx.EVT_TOOL(self, 101, self.OnOpen)
         wx.EVT_TOOL(self, 1, self.OnHome)
         wx.EVT_TOOL(self, 2, self.OnMine)
         wx.EVT_TOOL(self, 3, self.OnQuit)
@@ -316,9 +318,15 @@ class UI(wx.Frame):
 
     def OnOpen(self, event):
         self.statusbar.SetStatusText('Open Command')
-
-    def OnSave(self, event):
-        self.statusbar.SetStatusText('Save Command')
+	dlg = wx.FileDialog(self, "Open a picture", os.getcwd(), style = wx.OPEN, wildcard = "*.jpg")
+	if dlg.ShowModal() == wx.ID_OK:
+		im = Image.open(dlg.GetPath())
+		im.save("/home/allen/GP/src/r10.jpg")
+	        pic_frame = pic_show(None, -1, 'pic', 210)
+        	pic_frame.Center()
+        	pic_frame.Show(True)
+	
+	dlg.Destroy()
 
     def OnQuit(self, event):
         self.Close()
@@ -489,7 +497,11 @@ class pic_show(wx.Frame):
         funcbar.AddSimpleTool(3004, wx.Image('duibidu.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap(), 'contrast', 'Contrast')
 	funcbar.AddSimpleTool(3005, wx.Image('save.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap(), 'save', 'Save')
 	funcbar.AddSimpleTool(3006, wx.Image('set.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap(), 'set', 'Set')
-        funcbar.Realize()
+        funcbar.AddSimpleTool(3007, wx.Image('set.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap(), 'contour', 'Contour')
+	funcbar.AddSimpleTool(3008, wx.Image('set.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap(), 'emboss', 'Emboss')
+	funcbar.AddSimpleTool(3009, wx.Image('set.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap(), 'edge', 'Edge')
+	funcbar.AddSimpleTool(3010, wx.Image('set.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap(), 'watermark', 'Watermark')
+	funcbar.Realize()
         
         #print self.tag
 	global cur
@@ -498,19 +510,12 @@ class pic_show(wx.Frame):
         self.tag = id
         self.bright = 1.0
         self.contrast = 1.0
+	self.contour = 0
+	self.emboss = 0
+	self.edge = 0
         temp = image.ConvertToBitmap()        
 
         self.panel = wx.Panel(self, -1)
-        '''
-        self.button = wx.Button(self.panel, -1, "suoxiao", pos=(10, 500))
-        self.Bind(wx.EVT_BUTTON, self.OnSmall, self.button)
-        self.button = wx.Button(self.panel, -1, "fangda", pos=(110, 500))
-        self.Bind(wx.EVT_BUTTON, self.OnBig, self.button)
-        self.button = wx.Button(self.panel, -1, "liangdu", pos=(210, 500))
-        self.Bind(wx.EVT_BUTTON, self.OnBright, self.button)
-        self.button = wx.Button(self.panel, -1, "duibidu", pos=(310, 500))
-        self.Bind(wx.EVT_BUTTON, self.OnContrast, self.button)
-        '''
 	im = Image.open("/home/allen/GP/src/r" + str(cur) + str(id - 210) + ".jpg")
         wx.StaticBitmap(parent = self.panel, bitmap = temp, pos = (600 - (im.size[0]/2), 300 - (im.size[1]/2)), size = (im.size[0],im.size[1]))      
         pic_show_box.Add(self.panel, 0, wx.EXPAND)
@@ -526,19 +531,30 @@ class pic_show(wx.Frame):
         wx.EVT_TOOL(self, 3003, self.OnBright)
         wx.EVT_TOOL(self, 3004, self.OnContrast)
 	wx.EVT_TOOL(self, 3005, self.OnSave)
-	wx.EVT_TOOL(self, 3006, self.OnSet)    
+	wx.EVT_TOOL(self, 3006, self.OnSet)
+	wx.EVT_TOOL(self, 3007, self.OnContour)
+	wx.EVT_TOOL(self, 3008, self.OnEmboss)
+	wx.EVT_TOOL(self, 3009, self.OnEdge)
+	wx.EVT_TOOL(self, 3010, self.OnWatermark)    
 
-    def PreDeal(self, size, bright, contrast):
+    def PreDeal(self, size, bright, contrast, contour, emboss, edge):
 	global cur
-        im = Image.open("/home/allen/GP/src/r" + str(cur) + str(self.tag - 210) + ".jpg")
+	im = Image.open("/home/allen/GP/src/r" + str(cur) + str(self.tag - 210) + ".jpg")
         out = im.resize((size[0], size[1]))
         out.save("/home/allen/GP/src/rr" + str(cur) + str(self.tag - 210) + ".jpg")
         enhancer1 = ImageEnhance.Brightness(out)
         enhancer1.enhance(bright).save("/home/allen/GP/src/rr" + str(cur) + str(self.tag - 210) + ".jpg")
-        print bright
         temp = Image.open("/home/allen/GP/src/rr" + str(cur) + str(self.tag - 210) + ".jpg")
         enhancer2 = ImageEnhance.Contrast(temp)
         enhancer1.enhance(contrast).save("/home/allen/GP/src/rr" + str(cur) + str(self.tag - 210) + ".jpg")
+	im = Image.open("/home/allen/GP/src/rr" + str(cur) + str(self.tag - 210) + ".jpg")
+	if contour == 1:
+		im = im.filter(ImageFilter.CONTOUR)
+	if emboss == 1:
+		im = im.filter(ImageFilter.EMBOSS)
+	if edge == 1:
+		im = im.filter(ImageFilter.FIND_EDGES)
+	im.save("/home/allen/GP/src/rr" + str(cur) + str(self.tag - 210) + ".jpg")	
 	image = wx.Image("bg.jpg",wx.BITMAP_TYPE_ANY)
         temp = image.ConvertToBitmap()
         im = Image.open("bg.jpg")
@@ -547,7 +563,7 @@ class pic_show(wx.Frame):
     def OnSmall(self, event):
         #print self.tag
 	global cur
-        self.PreDeal(self.size, self.bright, self.contrast)
+        self.PreDeal(self.size, self.bright, self.contrast, self.contour, self.emboss, self.edge)
         
         im = Image.open("/home/allen/GP/src/rr" + str(cur) + str(self.tag - 210) + ".jpg")
         #print im.size
@@ -567,7 +583,7 @@ class pic_show(wx.Frame):
 
     def OnBig(self, event):
 	global cur
-        self.PreDeal(self.size, self.bright, self.contrast)
+        self.PreDeal(self.size, self.bright, self.contrast, self.contour, self.emboss, self.edge)
         im = Image.open("/home/allen/GP/src/rr" + str(cur) + str(self.tag - 210) + ".jpg")
         if im.size[0] < 1280:
             self.size[0] = self.size[0] + 64
@@ -585,7 +601,7 @@ class pic_show(wx.Frame):
         
     def OnBright(self, event):
 	global cur
-        self.PreDeal(self.size, self.bright, self.contrast)
+        self.PreDeal(self.size, self.bright, self.contrast, self.contour, self.emboss, self.edge)
         self.bright = self.bright + 1.0       
         im = Image.open("/home/allen/GP/src/rr" + str(cur) + str(self.tag - 210) + ".jpg")
         enhancer = ImageEnhance.Brightness(im)
@@ -601,7 +617,7 @@ class pic_show(wx.Frame):
         
     def OnContrast(self, event):
 	global cur
-        self.PreDeal(self.size, self.bright, self.contrast)
+        self.PreDeal(self.size, self.bright, self.contrast, self.contour, self.emboss, self.edge)
         self.contrast = self.contrast + 1.0
         im = Image.open("/home/allen/GP/src/rr" + str(cur) + str(self.tag - 210) + ".jpg")
         enhancer = ImageEnhance.Contrast(im)
@@ -641,7 +657,68 @@ class pic_show(wx.Frame):
         im.save("/home/allen/图片/" + 'name' + '.jpg')
         if dlg.ShowModal() == wx.ID_OK:
                 dlg.Destroy()
+
+    def OnContour(self, event):
+        global cur
+	if self.contour == 0:
+		self.contour =1
+        	self.PreDeal(self.size, self.bright, self.contrast, self.contour, self.emboss, self.edge)
+        	im = Image.open("/home/allen/GP/src/rr" + str(cur) + str(self.tag - 210) + ".jpg")
+		imfilter = im.filter(ImageFilter.CONTOUR)
+		imfilter.save("/home/allen/GP/src/rr" + str(cur) + str(self.tag - 210) + ".jpg")
+	else:
+		self.contour = 0
+		self.PreDeal(self.size, self.bright, self.contrast, self.contour, self.emboss, self.edge)
+		im = Image.open("/home/allen/GP/src/rr" + str(cur) + str(self.tag - 210) + ".jpg")
+	image = wx.Image("/home/allen/GP/src/rr" + str(cur) + str(self.tag - 210) + ".jpg",wx.BITMAP_TYPE_ANY)
+        temp = image.ConvertToBitmap()
+	wx.StaticBitmap(parent = self.panel, bitmap = temp, pos = (600 - (im.size[0]/2), 300 - (im.size[1]/2)), size = (im.size[0],im.size[1]))
+        self.panel.Refresh()
+
+    def OnEmboss(self, event):
+        global cur
+        if self.emboss == 0:
+                self.emboss =1
+                self.PreDeal(self.size, self.bright, self.contrast, self.contour, self.emboss, self.edge)
+                im = Image.open("/home/allen/GP/src/rr" + str(cur) + str(self.tag - 210) + ".jpg")
+                imfilter = im.filter(ImageFilter.EMBOSS)
+                imfilter.save("/home/allen/GP/src/rr" + str(cur) + str(self.tag - 210) + ".jpg")
+        else:
+                self.emboss = 0
+                self.PreDeal(self.size, self.bright, self.contrast, self.contour, self.emboss, self.edge)
+                im = Image.open("/home/allen/GP/src/rr" + str(cur) + str(self.tag - 210) + ".jpg")
+        image = wx.Image("/home/allen/GP/src/rr" + str(cur) + str(self.tag - 210) + ".jpg",wx.BITMAP_TYPE_ANY)
+        temp = image.ConvertToBitmap()
+        wx.StaticBitmap(parent = self.panel, bitmap = temp, pos = (600 - (im.size[0]/2), 300 - (im.size[1]/2)), size = (im.size[0],im.size[1]))
+        self.panel.Refresh()
 	
+
+    def OnEdge(self, event):
+        global cur
+        if self.edge == 0:
+                self.edge =1
+                self.PreDeal(self.size, self.bright, self.contrast, self.contour, self.emboss, self.edge)
+                im = Image.open("/home/allen/GP/src/rr" + str(cur) + str(self.tag - 210) + ".jpg")
+                imfilter = im.filter(ImageFilter.FIND_EDGES)
+                imfilter.save("/home/allen/GP/src/rr" + str(cur) + str(self.tag - 210) + ".jpg")
+        else:
+                self.edge = 0
+                self.PreDeal(self.size, self.bright, self.contrast, self.contour, self.emboss, self.edge)
+                im = Image.open("/home/allen/GP/src/rr" + str(cur) + str(self.tag - 210) + ".jpg")
+        image = wx.Image("/home/allen/GP/src/rr" + str(cur) + str(self.tag - 210) + ".jpg",wx.BITMAP_TYPE_ANY)
+        temp = image.ConvertToBitmap()
+        wx.StaticBitmap(parent = self.panel, bitmap = temp, pos = (600 - (im.size[0]/2), 300 - (im.size[1]/2)), size = (im.size[0],im.size[1]))
+        self.panel.Refresh()
+
+
+    def OnWatermark(self, event):
+        global cur
+        self.PreDeal(self.size, self.bright, self.contrast)
+	self.contour = 0
+        self.emboss = 0
+        self.edge = 0
+
+		
 
 class MyApp(wx.App):
     def OnInit(self):
