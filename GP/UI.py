@@ -318,7 +318,7 @@ class UI(wx.Frame):
 
     def OnOpen(self, event):
         self.statusbar.SetStatusText('Open Command')
-	dlg = wx.FileDialog(self, "Open a picture", os.getcwd(), style = wx.OPEN, wildcard = "*.jpg|*.png")
+	dlg = wx.FileDialog(self, "Open a picture", os.getcwd(), style = wx.OPEN, wildcard = "*.*")
 	if dlg.ShowModal() == wx.ID_OK:
 		im = Image.open(dlg.GetPath())
 		im.save("/home/allen/GP/src/r10.jpg")
@@ -710,54 +710,6 @@ class pic_show(wx.Frame):
         wx.StaticBitmap(parent = self.panel, bitmap = temp, pos = (600 - (im.size[0]/2), 300 - (im.size[1]/2)), size = (im.size[0],im.size[1]))
         self.panel.Refresh()
     
-    def reduce_opacity(self, im, opacity):
-    	"""Returns an image with reduced opacity."""
-    	assert opacity >= 0 and opacity <= 1
-    	if im.mode != 'RGBA':
-        	im = im.convert('RGBA')
-    	else:
-        	im = im.copy()
-    	alpha = im.split()[3]
-    	alpha = ImageEnhance.Brightness(alpha).enhance(opacity)
-    	im.putalpha(alpha)
-    	return im
-
-    def watermark(self, imagefile, markfile, position, opacity=1):
-    	im = Image.open(imagefile)
-    	mark = Image.open(markfile)
-    	if opacity < 1:
-    	    	mark = reduce_opacity(mark, opacity)
-    	if im.mode != 'RGBA':
-    	    	im = im.convert('RGBA')
-    	layer = Image.new('RGBA', im.size, (0,0,0,0))
-    	if position == 'title':
-    	    	for y in range(0, im.size[1], mark.size[1]):
-    	        	for x in range(0, im.size[0], mark.size[0]):
-    	            		layer.paste(mark, (x, y))
-    	elif position == 'scale':
-    	    	ratio = min(
-    	        float(im.size[0]) / mark.size[0], float(im.size[1]) / mark.size[1])
-    	    	w = int(mark.size[0] * ratio)
-    	    	h = int(mark.size[1] * ratio)
-    	    	mark = mark.resize((w, h))
-    	    	layer.paste(mark, ((im.size[0] - w) / 2, (im.size[1] - h) / 2))  
-    	elif position == POSITION[0]:
-    	    	position = (PADDING,PADDING)
-    	    	layer.paste(mark, position)
-    	elif position == POSITION[1]:
-        	position = (im.size[0] - mark.size[0]-PADDING, PADDING)
-        	layer.paste(mark, position)
-    	elif position == POSITION[2]:
-        	position = ((im.size[0] - mark.size[0])/2,(im.size[1] - mark.size[1])/2)
-        	layer.paste(mark, position)
-    	elif position == POSITION[3]:
-        	position = (PADDING,im.size[1] - mark.size[1]-PADDING,)
-        	layer.paste(mark, position)
-    	else:
-        	position = (im.size[0] - mark.size[0]-PADDING, im.size[1] - mark.size[1]-PADDING,)
-        	layer.paste(mark, position)
-	return Image.composite(layer, im, layer)
-
     def OnWatermark(self, event):
         global cur
 	POSITION = ('LEFTTOP','RIGHTTOP','CENTER','LEFTBOTTOM','RIGHTBOTTOM')
@@ -788,8 +740,14 @@ class pic_show(wx.Frame):
 		pos_dlg.Destroy()
 		im = Image.open("/home/allen/GP/src/rr" + str(cur) + str(self.tag - 210) + ".jpg")
 	       	mark = Image.open(markimage)
-        	#if opacity < 1:
-                #	mark = reduce_opacity(mark, 0.7)
+		if mark.mode != 'RGBA':
+			mark = mark.convert('RGBA')
+		else:
+        		mark = mark.copy()
+        	alpha = mark.split()[3]
+		print alpha
+        	alpha = ImageEnhance.Brightness(alpha).enhance(0.9)
+        	mark.putalpha(alpha)
         	if im.mode != 'RGBA':
                 	im = im.convert('RGBA')
         	layer = Image.new('RGBA', im.size, (0,0,0,0))
@@ -821,6 +779,7 @@ class pic_show(wx.Frame):
                 	layer.paste(mark, position)
         	Image.composite(layer, im, layer).save("/home/allen/GP/src/rr" + str(cur) + str(self.tag - 210) + ".jpg")
         dlg.Destroy()
+	im = Image.open("/home/allen/GP/src/rr" + str(cur) + str(self.tag - 210) + ".jpg")
 	image = wx.Image("/home/allen/GP/src/rr" + str(cur) + str(self.tag - 210) + ".jpg",wx.BITMAP_TYPE_ANY)
         temp = image.ConvertToBitmap()
         wx.StaticBitmap(parent = self.panel, bitmap = temp, pos = (600 - (im.size[0]/2), 300 - (im.size[1]/2)), size = (im.size[0],im.size[1]))
