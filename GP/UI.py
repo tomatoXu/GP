@@ -497,10 +497,10 @@ class pic_show(wx.Frame):
         funcbar.AddSimpleTool(3004, wx.Image('duibidu.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap(), 'contrast', 'Contrast')
 	funcbar.AddSimpleTool(3005, wx.Image('save.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap(), 'save', 'Save')
 	funcbar.AddSimpleTool(3006, wx.Image('set.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap(), 'set', 'Set')
-        funcbar.AddSimpleTool(3007, wx.Image('set.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap(), 'contour', 'Contour')
-	funcbar.AddSimpleTool(3008, wx.Image('set.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap(), 'emboss', 'Emboss')
-	funcbar.AddSimpleTool(3009, wx.Image('set.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap(), 'edge', 'Edge')
-	funcbar.AddSimpleTool(3010, wx.Image('set.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap(), 'watermark', 'Watermark')
+        funcbar.AddSimpleTool(3007, wx.Image('contour.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap(), 'contour', 'Contour')
+	funcbar.AddSimpleTool(3008, wx.Image('emboss.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap(), 'emboss', 'Emboss')
+	funcbar.AddSimpleTool(3009, wx.Image('edge.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap(), 'edge', 'Edge')
+	funcbar.AddSimpleTool(3010, wx.Image('water.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap(), 'watermark', 'Watermark')
 	funcbar.Realize()
         
         #print self.tag
