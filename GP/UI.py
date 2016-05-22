@@ -26,7 +26,7 @@ class UI(wx.Frame):
         edit = wx.Menu()  
         help = wx.Menu()  
         file.Append(101, '&open', 'open a picture')  
-        file.Append(102, '&save', 'save the picture')  
+        help.Append(102, '&help', 'development information')  
         file.AppendSeparator()  
         quit = wx.MenuItem(file, 105, '&Quit\tCtrl+Q', 'Quit the Application')  
         quit.SetBitmap(wx.Image ('stock_exit.png',  wx.BITMAP_TYPE_PNG).ConvertToBitmap())  
@@ -44,6 +44,7 @@ class UI(wx.Frame):
         self.SetMenuBar(menubar)
         self.Center()          
         wx.EVT_MENU(self, 105, self.OnQuit)
+	wx.EVT_MENU(self, 102, self.OnHelp)
 #toolbar
         vbox = wx.BoxSizer(wx.VERTICAL)
         toolbox = wx.BoxSizer(wx.HORIZONTAL)
@@ -330,6 +331,12 @@ class UI(wx.Frame):
 
     def OnQuit(self, event):
         self.Close()
+
+    def OnHelp(self, event):
+	dlg = wx.MessageDialog(None, u"开发者：徐寅",u"开发者",wx.OK)
+	if dlg.ShowModal() == wx.ID_OK:
+		dlg.Destroy()
+	dlg.Destroy()
 
     def OnBack(self,event):
 	global cur
