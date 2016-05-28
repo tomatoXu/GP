@@ -323,7 +323,13 @@ class UI(wx.Frame):
 	if dlg.ShowModal() == wx.ID_OK:
 		im = Image.open(dlg.GetPath())
 		im.save("/home/allen/GP/src/r10.jpg")
-	        pic_frame = pic_show(None, -1, 'pic', 210)
+	        image = wx.Image("/home/allen/GP/src/r10.jpg",wx.BITMAP_TYPE_ANY)
+	        im_size = image.GetSize()
+        	im_size[0] = im_size[0] + 200
+        	im_size[1] = im_size[1] + 100
+		if im_size[0] < 600:
+			im_size[0] = 600
+		pic_frame = pic_show(None, -1, 'pic', 210, im_size)
         	pic_frame.Center()
         	pic_frame.Show(True)
 	
@@ -421,8 +427,13 @@ class UI(wx.Frame):
     def OnPic(self, event):
         id = event.GetId()
         self.statusbar.SetStatusText('Show pic')
-        pic_frame = pic_show(None, -1, 'pic', id)
+	image = wx.Image("/home/allen/GP/src/r" + str(cur) + str(id - 210) + ".jpg",wx.BITMAP_TYPE_ANY)
+        im_size = image.GetSize()
+	im_size[0] = im_size[0] + 200
+	im_size[1] = im_size[1] + 100
+        pic_frame = pic_show(None, -1, 'pic', id, im_size)
         pic_frame.Center()
+	pic_frame.SetMaxSize((1400,600))
         pic_frame.Show(True)
 
     def OnSet(self, event):
@@ -493,9 +504,9 @@ class UI(wx.Frame):
 
 
 class pic_show(wx.Frame):
-    def __init__(self, parent, ID, title, id):
+    def __init__(self, parent, ID, title, id, im_size):
         wx.Frame.__init__(self, parent, id, 'show pic',
-                size=(1200, 600))
+                size=im_size, style = wx.CLOSE_BOX)
         pic_show_box = wx.BoxSizer(wx.VERTICAL)         
         funcbar = wx.ToolBar(self, -1, style = wx.TB_HORIZONTAL | wx.NO_BORDER)
         funcbar.AddSimpleTool(3001, wx.Image('suoxiao.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap(), 'small', 'Small') 
@@ -508,12 +519,15 @@ class pic_show(wx.Frame):
 	funcbar.AddSimpleTool(3008, wx.Image('emboss.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap(), 'emboss', 'Emboss')
 	funcbar.AddSimpleTool(3009, wx.Image('edge.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap(), 'edge', 'Edge')
 	funcbar.AddSimpleTool(3010, wx.Image('water.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap(), 'watermark', 'Watermark')
+	funcbar.AddSimpleTool(3011, wx.Image('exit.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap(), 'close', 'Close')
 	funcbar.Realize()
         
         #print self.tag
 	global cur
         image = wx.Image("/home/allen/GP/src/r" + str(cur) + str(id - 210) + ".jpg",wx.BITMAP_TYPE_ANY)
         self.size = image.GetSize()
+	self.o_size = image.GetSize()
+	self.im_size = im_size
         self.tag = id
         self.bright = 1.0
         self.contrast = 1.0
@@ -524,7 +538,7 @@ class pic_show(wx.Frame):
 
         self.panel = wx.Panel(self, -1)
 	im = Image.open("/home/allen/GP/src/r" + str(cur) + str(id - 210) + ".jpg")
-        wx.StaticBitmap(parent = self.panel, bitmap = temp, pos = (600 - (im.size[0]/2), 300 - (im.size[1]/2)), size = (im.size[0],im.size[1]))      
+        wx.StaticBitmap(parent = self.panel, bitmap = temp, pos = (((self.im_size[0] - im.size[0])/2), ((self.im_size[1] - im.size[1])/2)), size = (im.size[0],im.size[1]))      
         pic_show_box.Add(self.panel, 0, wx.EXPAND)
         pic_show_box.Add(funcbar, 0, wx.EXPAND)
         self.SetSizer(pic_show_box)
@@ -542,7 +556,8 @@ class pic_show(wx.Frame):
 	wx.EVT_TOOL(self, 3007, self.OnContour)
 	wx.EVT_TOOL(self, 3008, self.OnEmboss)
 	wx.EVT_TOOL(self, 3009, self.OnEdge)
-	wx.EVT_TOOL(self, 3010, self.OnWatermark)    
+	wx.EVT_TOOL(self, 3010, self.OnWatermark) 
+	wx.EVT_TOOL(self, 3011, self.OnClose)   
 
     def PreDeal(self, size, bright, contrast, contour, emboss, edge):
 	global cur
@@ -565,7 +580,7 @@ class pic_show(wx.Frame):
 	image = wx.Image("bg.jpg",wx.BITMAP_TYPE_ANY)
         temp = image.ConvertToBitmap()
         im = Image.open("bg.jpg")
-        wx.StaticBitmap(parent = self.panel, bitmap = temp, pos = (0, 0), size = (1200,600))
+        wx.StaticBitmap(parent = self.panel, bitmap = temp, pos = (0, 0))
         
     def OnSmall(self, event):
         #print self.tag
@@ -573,18 +588,17 @@ class pic_show(wx.Frame):
         self.PreDeal(self.size, self.bright, self.contrast, self.contour, self.emboss, self.edge)
         
         im = Image.open("/home/allen/GP/src/rr" + str(cur) + str(self.tag - 210) + ".jpg")
-        #print im.size
-        if im.size[0] > 320:
-            self.size[0] = self.size[0] - 64
-            self.size[1] = self.size[1] - 32
-            out = im.resize((self.size[0], self.size[1]))
+        if im.size[0] > self.o_size[0]/2:
+            self.size[0] = self.size[0] - self.o_size[0]/10
+            self.size[1] = self.size[1] - self.o_size[1]/10
+            out = im.resize(self.size)
         else:
             out = im        
         out.save("/home/allen/GP/src/rr" + str(cur) + str(self.tag - 210) + ".jpg")
         image = wx.Image("/home/allen/GP/src/rr" + str(cur) + str(self.tag - 210) + ".jpg",wx.BITMAP_TYPE_ANY)
         temp = image.ConvertToBitmap()
 	im = Image.open("/home/allen/GP/src/rr" + str(cur) + str(self.tag - 210) + ".jpg")
-        wx.StaticBitmap(parent = self.panel, bitmap = temp, pos = (600 - (im.size[0]/2), 300 - (im.size[1]/2)), size = (im.size[0],im.size[1]))
+        wx.StaticBitmap(parent = self.panel, bitmap = temp, pos = (((self.im_size[0] - im.size[0])/2), ((self.im_size[1] - im.size[1])/2)), size = (im.size[0],im.size[1]))
         self.panel.Refresh()
         print self.size
 
@@ -592,17 +606,17 @@ class pic_show(wx.Frame):
 	global cur
         self.PreDeal(self.size, self.bright, self.contrast, self.contour, self.emboss, self.edge)
         im = Image.open("/home/allen/GP/src/rr" + str(cur) + str(self.tag - 210) + ".jpg")
-        if im.size[0] < 1280:
-            self.size[0] = self.size[0] + 64
-            self.size[1] = self.size[1] + 32
-            out = im.resize((self.size[0], self.size[1]))
+        if im.size[0] < self.o_size[0]*1.5:
+            self.size[0] = self.size[0] + self.o_size[0]/10
+            self.size[1] = self.size[1] + self.o_size[1]/10
+            out = im.resize(self.size)
         else:
             out = im
         out.save("/home/allen/GP/src/rr" + str(cur) + str(self.tag - 210) + ".jpg")
         image = wx.Image("/home/allen/GP/src/rr" + str(cur) + str(self.tag - 210) + ".jpg",wx.BITMAP_TYPE_ANY)
         temp = image.ConvertToBitmap()
 	im = Image.open("/home/allen/GP/src/rr" + str(cur) + str(self.tag - 210) + ".jpg")
-        wx.StaticBitmap(parent = self.panel, bitmap = temp, pos = (600 - (im.size[0]/2), 300 - (im.size[1]/2)), size = (im.size[0],im.size[1]))
+        wx.StaticBitmap(parent = self.panel, bitmap = temp, pos = (((self.im_size[0] - im.size[0])/2), ((self.im_size[1] - im.size[1])/2)), size = (im.size[0],im.size[1]))
         self.panel.Refresh()
         print self.size
         
@@ -619,7 +633,7 @@ class pic_show(wx.Frame):
         image = wx.Image("/home/allen/GP/src/rr" + str(cur) + str(self.tag - 210) + ".jpg",wx.BITMAP_TYPE_ANY)
         temp = image.ConvertToBitmap()
 	im = Image.open("/home/allen/GP/src/rr" + str(cur) + str(self.tag - 210) + ".jpg")
-        wx.StaticBitmap(parent = self.panel, bitmap = temp, pos = (600 - (im.size[0]/2), 300 - (im.size[1]/2)), size = (im.size[0],im.size[1]))
+        wx.StaticBitmap(parent = self.panel, bitmap = temp, pos = (((self.im_size[0] - im.size[0])/2), ((self.im_size[1] - im.size[1])/2)), size = (im.size[0],im.size[1]))
         self.panel.Refresh()
         
     def OnContrast(self, event):
@@ -635,7 +649,7 @@ class pic_show(wx.Frame):
         image = wx.Image("/home/allen/GP/src/rr" + str(cur) + str(self.tag - 210) + ".jpg",wx.BITMAP_TYPE_ANY)
         temp = image.ConvertToBitmap()
 	im = Image.open("/home/allen/GP/src/rr" + str(cur) + str(self.tag - 210) + ".jpg")
-        wx.StaticBitmap(parent = self.panel, bitmap = temp, pos = (600 - (im.size[0]/2), 300 - (im.size[1]/2)), size = (im.size[0],im.size[1]))
+        wx.StaticBitmap(parent = self.panel, bitmap = temp, pos = (((self.im_size[0] - im.size[0])/2), ((self.im_size[1] - im.size[1])/2)), size = (im.size[0],im.size[1]))
         self.panel.Refresh()
 
     def OnSave(self, event):
@@ -679,7 +693,7 @@ class pic_show(wx.Frame):
 		im = Image.open("/home/allen/GP/src/rr" + str(cur) + str(self.tag - 210) + ".jpg")
 	image = wx.Image("/home/allen/GP/src/rr" + str(cur) + str(self.tag - 210) + ".jpg",wx.BITMAP_TYPE_ANY)
         temp = image.ConvertToBitmap()
-	wx.StaticBitmap(parent = self.panel, bitmap = temp, pos = (600 - (im.size[0]/2), 300 - (im.size[1]/2)), size = (im.size[0],im.size[1]))
+	wx.StaticBitmap(parent = self.panel, bitmap = temp, pos = (((self.im_size[0] - im.size[0])/2), ((self.im_size[1] - im.size[1])/2)), size = (im.size[0],im.size[1]))
         self.panel.Refresh()
 
     def OnEmboss(self, event):
@@ -696,7 +710,7 @@ class pic_show(wx.Frame):
                 im = Image.open("/home/allen/GP/src/rr" + str(cur) + str(self.tag - 210) + ".jpg")
         image = wx.Image("/home/allen/GP/src/rr" + str(cur) + str(self.tag - 210) + ".jpg",wx.BITMAP_TYPE_ANY)
         temp = image.ConvertToBitmap()
-        wx.StaticBitmap(parent = self.panel, bitmap = temp, pos = (600 - (im.size[0]/2), 300 - (im.size[1]/2)), size = (im.size[0],im.size[1]))
+        wx.StaticBitmap(parent = self.panel, bitmap = temp, pos = (((self.im_size[0] - im.size[0])/2), ((self.im_size[1] - im.size[1])/2)), size = (im.size[0],im.size[1]))
         self.panel.Refresh()
 	
 
@@ -714,7 +728,7 @@ class pic_show(wx.Frame):
                 im = Image.open("/home/allen/GP/src/rr" + str(cur) + str(self.tag - 210) + ".jpg")
         image = wx.Image("/home/allen/GP/src/rr" + str(cur) + str(self.tag - 210) + ".jpg",wx.BITMAP_TYPE_ANY)
         temp = image.ConvertToBitmap()
-        wx.StaticBitmap(parent = self.panel, bitmap = temp, pos = (600 - (im.size[0]/2), 300 - (im.size[1]/2)), size = (im.size[0],im.size[1]))
+        wx.StaticBitmap(parent = self.panel, bitmap = temp, pos = (((self.im_size[0] - im.size[0])/2), ((self.im_size[1] - im.size[1])/2)), size = (im.size[0],im.size[1]))
         self.panel.Refresh()
     
     def OnWatermark(self, event):
@@ -789,8 +803,11 @@ class pic_show(wx.Frame):
 	im = Image.open("/home/allen/GP/src/rr" + str(cur) + str(self.tag - 210) + ".jpg")
 	image = wx.Image("/home/allen/GP/src/rr" + str(cur) + str(self.tag - 210) + ".jpg",wx.BITMAP_TYPE_ANY)
         temp = image.ConvertToBitmap()
-        wx.StaticBitmap(parent = self.panel, bitmap = temp, pos = (600 - (im.size[0]/2), 300 - (im.size[1]/2)), size = (im.size[0],im.size[1]))
+        wx.StaticBitmap(parent = self.panel, bitmap = temp, pos = (((self.im_size[0] - im.size[0])/2), ((self.im_size[1] - im.size[1])/2)), size = (im.size[0],im.size[1]))
         self.panel.Refresh()		
+
+    def OnClose(self, event):
+	self.Close()
 
 class MyApp(wx.App):
     def OnInit(self):
