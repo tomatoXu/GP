@@ -9,13 +9,22 @@ import ImageEnhance
 import ImageFilter
 import re
 global word
-word = ""
+word = unicode("高清", 'utf-8')
 global cur
 cur = 1
 global dir
 dir = "/home/allen/GP/save/"
 global max_page
 max_page = 0
+
+def endWith(s, *endstring):
+    array = map(s.endswith, endstring)
+    if True in array:
+            return True
+    else:
+            return False
+
+
 
 class UI(wx.Frame):
     def __init__(self, parent, ID, title):
@@ -231,6 +240,13 @@ class UI(wx.Frame):
         max_page = int(math.ceil(dl.getnum() / 6.0))
         print dl.getnum(),max_page
         dl.downImageViaMutiThread(b, 0)
+	dl.getpngViaMutiThread()
+        im = Image.open('/home/allen/GP/src/r'+str(cur)+'6.png')
+        out = im.copy()
+        out.save('/home/allen/GP/src/r'+str((cur/3+1)*3)+'6.png')
+        im = Image.open('/home/allen/GP/src/r'+str(cur)+'6.jpg')
+        out = im.copy()
+        out.save('/home/allen/GP/src/r'+str((cur/3+1)*3)+'6.jpg')
         im = wx.Image('/home/allen/GP/src/r11.png',wx.BITMAP_TYPE_ANY)
         temp = im.ConvertToBitmap()
         wx.StaticBitmap(parent = self.pic_panel_1, bitmap = temp, pos=(0,0), size = (300,140))
@@ -263,7 +279,56 @@ class UI(wx.Frame):
         self.statusbar.SetStatusText('search done')
 
     def OnMine(self, event):
+	global max_page
+	global cur
+	cur = 1
         self.statusbar.SetStatusText('Mine Command')
+	s = os.listdir('/home/allen/GP/save')
+	f_file = []
+	for i in s:
+		if endWith(i, '.jpg', '.png'):
+			print i
+			f_file.append(i)
+	count = 0
+	for file in f_file:
+		im = Image.open('/home/allen/GP/save/' + file)
+		im.save('/home/allen/GP/src/r'+str(count/6 + 1) + str(count%6 + 1)  +'.jpg')
+		out = im.resize((300,150))
+		out.save('/home/allen/GP/src/r'+str(count/6 + 1) + str(count%6 + 1)  +'.png')
+		count = count +1
+	max_page = (count-1)/6 + 1
+	while (count < max_page*6):
+		im = Image.open('/home/allen/GP/bg.jpg')
+		im = im.resize((600,300))
+		im.save('/home/allen/GP/src/r'+str(count/6 + 1) + str(count%6 + 1)  +'.jpg')
+		out = im.resize((300,150))
+		out.save('/home/allen/GP/src/r'+str(count/6 + 1) + str(count%6 + 1)  +'.png')
+		count = count + 1	
+
+        im = wx.Image('/home/allen/GP/src/r11.png',wx.BITMAP_TYPE_ANY)
+        temp = im.ConvertToBitmap()
+        wx.StaticBitmap(parent = self.pic_panel_1, bitmap = temp, pos=(0,0), size = (300,140))
+        self.pic_panel_1.Refresh()
+        im = wx.Image('/home/allen/GP/src/r12.png',wx.BITMAP_TYPE_ANY)
+        temp = im.ConvertToBitmap()
+        wx.StaticBitmap(parent = self.pic_panel_2, bitmap = temp, pos=(0,0), size = (300,140))
+        self.pic_panel_2.Refresh()
+        im = wx.Image('/home/allen/GP/src/r13.png',wx.BITMAP_TYPE_ANY)
+        temp = im.ConvertToBitmap()
+        wx.StaticBitmap(parent = self.pic_panel_3, bitmap = temp, pos=(0,0), size = (300,140))
+        self.pic_panel_3.Refresh()
+        im = wx.Image('/home/allen/GP/src/r14.png',wx.BITMAP_TYPE_ANY)
+        temp = im.ConvertToBitmap()
+        wx.StaticBitmap(parent = self.pic_panel_4, bitmap = temp, pos=(0,0), size = (300,140))
+        self.pic_panel_4.Refresh()
+        im = wx.Image('/home/allen/GP/src/r15.png',wx.BITMAP_TYPE_ANY)
+        temp = im.ConvertToBitmap()
+        wx.StaticBitmap(parent = self.pic_panel_5, bitmap = temp, pos=(0,0), size = (300,140))
+        self.pic_panel_5.Refresh()
+        im = wx.Image('/home/allen/GP/src/r16.png',wx.BITMAP_TYPE_ANY)
+        temp = im.ConvertToBitmap()
+        wx.StaticBitmap(parent = self.pic_panel_6, bitmap = temp, pos=(0,0), size = (300,140))
+        self.pic_panel_6.Refresh()
 
     def OnSearch(self, event):
 	global cur
@@ -271,7 +336,6 @@ class UI(wx.Frame):
 	global word
 	cur = 1
 	key = self.searchtext.GetValue()
-	print key
 	word = key
         self.statusbar.SetStatusText('Please wait')
  	dl = download()
@@ -286,6 +350,13 @@ class UI(wx.Frame):
 	max_page = int(math.ceil(dl.getnum() / 6.0))
         print dl.getnum(),max_page
         dl.downImageViaMutiThread(b, 0)
+	dl.getpngViaMutiThread()
+	im = Image.open('/home/allen/GP/src/r'+str(cur)+'6.png')
+	out = im.copy()
+	out.save('/home/allen/GP/src/r'+str((cur/3+1)*3)+'6.png')
+	im = Image.open('/home/allen/GP/src/r'+str(cur)+'6.jpg')
+        out = im.copy()
+        out.save('/home/allen/GP/src/r'+str((cur/3+1)*3)+'6.jpg')
 	im = wx.Image('/home/allen/GP/src/r11.png',wx.BITMAP_TYPE_ANY)
         temp = im.ConvertToBitmap()
         wx.StaticBitmap(parent = self.pic_panel_1, bitmap = temp, pos=(0,0), size = (300,140))
@@ -318,12 +389,13 @@ class UI(wx.Frame):
 	self.statusbar.SetStatusText('search done')
 
     def OnOpen(self, event):
+	global cur
         self.statusbar.SetStatusText('Open Command')
 	dlg = wx.FileDialog(self, "Open a picture", os.getcwd(), style = wx.OPEN, wildcard = "*.*")
 	if dlg.ShowModal() == wx.ID_OK:
 		im = Image.open(dlg.GetPath())
-		im.save("/home/allen/GP/src/r10.jpg")
-	        image = wx.Image("/home/allen/GP/src/r10.jpg",wx.BITMAP_TYPE_ANY)
+		im.save("/home/allen/GP/src/r"+str(cur)+"0.jpg")
+	        image = wx.Image("/home/allen/GP/src/r"+str(cur)+"0.jpg",wx.BITMAP_TYPE_ANY)
 	        im_size = image.GetSize()
         	im_size[0] = im_size[0] + 200
         	im_size[1] = im_size[1] + 100
@@ -385,13 +457,26 @@ class UI(wx.Frame):
                 self.statusbar.SetStatusText('It\'s already the last page')
 		return
 	elif (not os.path.exists(filename)):
-		print 'aaaa'
 		dl = download()
 		a = dl.urlencode(word)
         	b = dl.get_linklist(a, cur/3)
         	c = dl.getnum()
         	dl.downImageViaMutiThread(b, cur/3)
+		dl.getpngViaMutiThread()
         cur = cur + 1
+	if cur == max_page:
+		im = Image.open('/home/allen/GP/bg.jpg')
+		out = im.resize((600,300))
+                out.save('/home/allen/GP/src/r'+str(cur)+'6.jpg')
+		out = im.resize((300,150))
+		out.save('/home/allen/GP/src/r'+str(cur)+'6.png')
+	else:
+        	im = Image.open('/home/allen/GP/src/r'+str(cur)+'6.png')
+        	out = im.copy()
+        	out.save('/home/allen/GP/src/r'+str((cur/3+1)*3)+'6.png')
+        	im = Image.open('/home/allen/GP/src/r'+str(cur)+'6.jpg')
+        	out = im.copy()
+        	out.save('/home/allen/GP/src/r'+str((cur/3+1)*3)+'6.jpg')
 	if (os.path.exists(r'/home/allen/GP/src/r'+str(cur)+'1.png')):
         	im = wx.Image('/home/allen/GP/src/r'+str(cur)+'1.png',wx.BITMAP_TYPE_ANY)
         	temp = im.ConvertToBitmap()
@@ -431,6 +516,8 @@ class UI(wx.Frame):
         im_size = image.GetSize()
 	im_size[0] = im_size[0] + 200
 	im_size[1] = im_size[1] + 100
+	if im_size[0] < 500:
+		im_size[0] = 600
         pic_frame = pic_show(None, -1, 'pic', id, im_size)
         pic_frame.Center()
 	pic_frame.SetMaxSize((1400,600))
@@ -471,6 +558,13 @@ class UI(wx.Frame):
 	max_page = int(math.ceil(dl.getnum() / 6.0))
 	print dl.getnum(),max_page
         dl.downImageViaMutiThread(b, 0)
+	dl.getpngViaMutiThread()
+        im = Image.open('/home/allen/GP/src/r'+str(cur)+'6.png')
+        out = im.copy()
+        out.save('/home/allen/GP/src/r'+str((cur/3+1)*3)+'6.png')
+        im = Image.open('/home/allen/GP/src/r'+str(cur)+'6.jpg')
+        out = im.copy()
+        out.save('/home/allen/GP/src/r'+str((cur/3+1)*3)+'6.jpg')
         im = wx.Image('/home/allen/GP/src/r11.png',wx.BITMAP_TYPE_ANY)
         temp = im.ConvertToBitmap()
         wx.StaticBitmap(parent = self.pic_panel_1, bitmap = temp, pos=(0,0), size = (300,140))
@@ -513,12 +607,12 @@ class pic_show(wx.Frame):
         funcbar.AddSimpleTool(3002, wx.Image('fangda.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap(), 'big', 'Big')
         funcbar.AddSimpleTool(3003, wx.Image('liangdu.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap(), 'bright', 'Bright')
         funcbar.AddSimpleTool(3004, wx.Image('duibidu.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap(), 'contrast', 'Contrast')
-	funcbar.AddSimpleTool(3005, wx.Image('save.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap(), 'save', 'Save')
-	funcbar.AddSimpleTool(3006, wx.Image('set.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap(), 'set', 'Set')
         funcbar.AddSimpleTool(3007, wx.Image('contour.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap(), 'contour', 'Contour')
 	funcbar.AddSimpleTool(3008, wx.Image('emboss.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap(), 'emboss', 'Emboss')
 	funcbar.AddSimpleTool(3009, wx.Image('edge.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap(), 'edge', 'Edge')
 	funcbar.AddSimpleTool(3010, wx.Image('water.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap(), 'watermark', 'Watermark')
+	funcbar.AddSimpleTool(3005, wx.Image('save.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap(), 'save', 'Save')
+        funcbar.AddSimpleTool(3006, wx.Image('set.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap(), 'set', 'Set')
 	funcbar.AddSimpleTool(3011, wx.Image('exit.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap(), 'close', 'Close')
 	funcbar.Realize()
         
@@ -685,8 +779,8 @@ class pic_show(wx.Frame):
 		self.contour =1
         	self.PreDeal(self.size, self.bright, self.contrast, self.contour, self.emboss, self.edge)
         	im = Image.open("/home/allen/GP/src/rr" + str(cur) + str(self.tag - 210) + ".jpg")
-		imfilter = im.filter(ImageFilter.CONTOUR)
-		imfilter.save("/home/allen/GP/src/rr" + str(cur) + str(self.tag - 210) + ".jpg")
+		im = im.filter(ImageFilter.CONTOUR)
+		im.save("/home/allen/GP/src/rr" + str(cur) + str(self.tag - 210) + ".jpg")
 	else:
 		self.contour = 0
 		self.PreDeal(self.size, self.bright, self.contrast, self.contour, self.emboss, self.edge)
@@ -703,6 +797,7 @@ class pic_show(wx.Frame):
                 self.PreDeal(self.size, self.bright, self.contrast, self.contour, self.emboss, self.edge)
                 im = Image.open("/home/allen/GP/src/rr" + str(cur) + str(self.tag - 210) + ".jpg")
                 imfilter = im.filter(ImageFilter.EMBOSS)
+		imfilter = imfilter.filter(ImageFilter.EMBOSS)
                 imfilter.save("/home/allen/GP/src/rr" + str(cur) + str(self.tag - 210) + ".jpg")
         else:
                 self.emboss = 0
@@ -721,6 +816,7 @@ class pic_show(wx.Frame):
                 self.PreDeal(self.size, self.bright, self.contrast, self.contour, self.emboss, self.edge)
                 im = Image.open("/home/allen/GP/src/rr" + str(cur) + str(self.tag - 210) + ".jpg")
                 imfilter = im.filter(ImageFilter.FIND_EDGES)
+		imfilter = imfilter.filter(ImageFilter.FIND_EDGES)
                 imfilter.save("/home/allen/GP/src/rr" + str(cur) + str(self.tag - 210) + ".jpg")
         else:
                 self.edge = 0
@@ -784,19 +880,19 @@ class pic_show(wx.Frame):
                 	mark = mark.resize((w, h))
                 	layer.paste(mark, ((im.size[0] - w) / 2, (im.size[1] - h) / 2))
         	elif position == POSITION[0]:
-                	position = (10,10)
+                	position = (60,10)
                 	layer.paste(mark, position)
         	elif position == POSITION[1]:
-                	position = (im.size[0] - mark.size[0]-10, 10)
+                	position = (im.size[0] - mark.size[0]-60, 10)
                 	layer.paste(mark, position)
         	elif position == POSITION[2]:
                 	position = ((im.size[0] - mark.size[0])/2,(im.size[1] - mark.size[1])/2)
                 	layer.paste(mark, position)
         	elif position == POSITION[3]:
-                	position = (10,im.size[1] - mark.size[1]-10,)
+                	position = (60,im.size[1] - mark.size[1]-10,)
                 	layer.paste(mark, position)
         	else:
-                	position = (im.size[0] - mark.size[0]-10, im.size[1] - mark.size[1]-10,)
+                	position = (im.size[0] - mark.size[0]-60, im.size[1] - mark.size[1]-10,)
                 	layer.paste(mark, position)
         	Image.composite(layer, im, layer).save("/home/allen/GP/src/rr" + str(cur) + str(self.tag - 210) + ".jpg")
         dlg.Destroy()

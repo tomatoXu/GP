@@ -7,6 +7,8 @@ from bs4 import BeautifulSoup
 import re
 global num
 num = 0
+global imglist
+imglist = []
 class download():
     def urlencode(self, words):
         #st = unicode(words, "utf-8")
@@ -60,22 +62,14 @@ class download():
             return
         finally:
             jpg.close
-	    im = Image.open("/home/allen/GP/src/"+imgName)
-            out = im.resize((300,150))
-            str_list = list(imgName)
-            str_list.pop()
-            str_list.pop()
-            str_list.pop()
-            str_list.pop()
-            new = "".join(str_list)
-	    print new
-            out.save("/home/allen/GP/src/"+new+".png")
     
     def getnum(self):
 	global num
 	return num
  
     def downImageViaMutiThread(self, linklist, page):
+	global imglist
+	imglist = []
 	headers = {
                    "Host":"www.netbian.com",
                    "User-Agent": "Mozilla/5.0(X11; Ubuntu; Linux x86_64; rv:31.0)Gecko/20100101 Firefox/31.0",
@@ -94,7 +88,8 @@ class download():
 	    des_link = link[0].lstrip('img src=\"')
 	    print "link:",des_link
             filename = "r" + str(count/6 + 1 + page * 3) + str(count%6 + 1) + ".jpg"
-            t = threading.Thread(target=self.saveImage,args=(des_link,filename))
+            imglist.append(filename)
+	    t = threading.Thread(target=self.saveImage,args=(des_link,filename))
             count = count+1
             task_threads.append(t)
         for task in task_threads:
@@ -102,17 +97,36 @@ class download():
         for task in task_threads:
             task.join() 
 
-    def getpng(self): 
-	for i in range(3):
-		for j in range(6):
-			im = Image.open("/home/allen/GP/src/r"+str(i+1)+str(j+1)+".jpg")
-			out = im.resize((300,150))
-			out.save("/home/allen/GP/src/r"+str(i+1)+str(j+1)+".png")
+    def getpng(self, img):
+	im = Image.open("/home/allen/GP/src/"+img)
+        out = im.resize((300,150))
+        str_list = list(img)
+        str_list.pop()
+        str_list.pop()
+        str_list.pop()
+        str_list.pop()
+        new = "".join(str_list)
+        print new
+        out.save("/home/allen/GP/src/"+new+".png")
+
+    def getpngViaMutiThread(self):
+	global imglist
+	task_threads=[]
+	for img in imglist:
+	    t = threading.Thread(target = self.getpng, args = (img,))
+	    task_threads.append(t)
+        for task in task_threads:
+            task.start()
+        for task in task_threads:
+            task.join()
+
+	
+ 
 if __name__ == "__main__":
     dl = download()
     a = dl.urlencode(u'风景')
     b = dl.get_linklist(a, 0)
     dl.downImageViaMutiThread(b, 0)
-
+    dl.getpngViaMutiThread()
 #    dl.getpng()
 #    print b
